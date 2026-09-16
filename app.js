@@ -457,7 +457,148 @@ function setupCaseEvents() {
         );
 
     }
+    /* =========================================
+       حفظ القضية
+    ========================================= */
 
+    const caseForm =
+        document.getElementById(
+            "caseForm"
+        );
+
+
+    if (caseForm) {
+
+        caseForm.addEventListener(
+            "submit",
+            (event) => {
+
+                event.preventDefault();
+
+
+                const caseData = {
+
+                    caseNumber:
+                        document
+                            .getElementById("caseNumber")
+                            .value
+                            .trim(),
+
+                    caseYear:
+                        document
+                            .getElementById("caseYear")
+                            .value,
+
+                    caseType:
+                        document
+                            .getElementById("caseType")
+                            .value
+                            .trim(),
+
+                    caseLevel:
+                        document
+                            .getElementById("caseLevel")
+                            .value
+                            .trim(),
+
+                    caseCourt:
+                        document
+                            .getElementById("caseCourt")
+                            .value
+                            .trim(),
+
+                    caseCircuit:
+                        document
+                            .getElementById("caseCircuit")
+                            .value
+                            .trim(),
+
+                    caseSubject:
+                        document
+                            .getElementById("caseSubject")
+                            .value
+                            .trim(),
+
+                    caseRole:
+                        document
+                            .getElementById("caseRole")
+                            .value
+                            .trim(),
+
+                    caseStatus:
+                        document
+                            .getElementById("caseStatus")
+                            .value
+                            .trim(),
+
+                    caseFilingDate:
+                        document
+                            .getElementById("caseFilingDate")
+                            .value,
+
+                    caseNotes:
+                        document
+                            .getElementById("caseNotes")
+                            .value
+                            .trim(),
+
+                    createdAt:
+                        new Date().toISOString(),
+
+                    updatedAt:
+                        new Date().toISOString()
+
+                };
+
+
+                const transaction =
+                    db.transaction(
+                        [CASES_STORE],
+                        "readwrite"
+                    );
+
+
+                const store =
+                    transaction.objectStore(
+                        CASES_STORE
+                    );
+
+
+                store.add(caseData);
+
+
+                transaction.oncomplete = () => {
+
+                    alert(
+                        "تم حفظ القضية بنجاح."
+                    );
+
+
+                    caseForm.reset();
+
+
+                    caseModal.classList.add(
+                        "hidden"
+                    );
+
+
+                    loadCases();
+
+                };
+
+
+                transaction.onerror = () => {
+
+                    alert(
+                        "حدث خطأ أثناء حفظ القضية."
+                    );
+
+                };
+
+            }
+        );
+
+    }
 }
 
 
