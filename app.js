@@ -1,5 +1,5 @@
 const DB_NAME = "LawOfficeDB";
-const DB_VERSION = 1;
+const DB_VERSION = 2;
 const CLIENTS_STORE = "clients";
 
 let db;
