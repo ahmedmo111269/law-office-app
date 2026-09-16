@@ -4,51 +4,90 @@ const CLIENTS_STORE = "clients";
 
 let db;
 
+
+/* =========================================
+   تشغيل البرنامج
+========================================= */
+
 document.addEventListener("DOMContentLoaded", () => {
 
     openDatabase();
 
     setupNavigation();
+
     setupClientEvents();
 
 });
 
 
+/* =========================================
+   قاعدة البيانات
+========================================= */
+
 function openDatabase() {
 
-    const request = indexedDB.open(DB_NAME, DB_VERSION);
+    const request = indexedDB.open(
+        DB_NAME,
+        DB_VERSION
+    );
+
 
     request.onupgradeneeded = (event) => {
 
         const database = event.target.result;
 
+
         if (!database.objectStoreNames.contains(CLIENTS_STORE)) {
 
-            const store = database.createObjectStore(
-                CLIENTS_STORE,
+            const store =
+                database.createObjectStore(
+                    CLIENTS_STORE,
+                    {
+                        keyPath: "id",
+                        autoIncrement: true
+                    }
+                );
+
+
+            store.createIndex(
+                "fullName",
+                "fullName",
                 {
-                    keyPath: "id",
-                    autoIncrement: true
+                    unique: false
                 }
             );
 
-            store.createIndex("fullName", "fullName", {
-                unique: false
-            });
 
-            store.createIndex("nationalId", "nationalId", {
-                unique: false
-            });
+            store.createIndex(
+                "nationalId",
+                "nationalId",
+                {
+                    unique: false
+                }
+            );
 
-            store.createIndex("phone1", "phone1", {
-                unique: false
-            });
 
-            store.createIndex("archived", "archived", {
-                unique: false
-            });
+            store.createIndex(
+                "phone1",
+                "phone1",
+                {
+                    unique: false
+                }
+            );
+
+
+            store.createIndex(
+                "archived",
+                "archived",
+                {
+                    unique: false
+                }
+            );
+
         }
+
     };
+
 
     request.onsuccess = (event) => {
 
@@ -58,52 +97,89 @@ function openDatabase() {
 
     };
 
+
     request.onerror = () => {
 
-        alert("حدث خطأ أثناء فتح قاعدة البيانات.");
+        alert(
+            "حدث خطأ أثناء فتح قاعدة البيانات."
+        );
 
     };
 
 }
 
 
+/* =========================================
+   التنقل بين الصفحات
+========================================= */
+
 function setupNavigation() {
 
-    const modules = document.querySelectorAll(".module");
+    const modules =
+        document.querySelectorAll(".module");
+
 
     modules.forEach(module => {
 
-        module.addEventListener("click", () => {
+        module.addEventListener(
+            "click",
+            () => {
 
-            const name = module.dataset.module;
+                const name =
+                    module.dataset.module;
 
-            if (name === "clients") {
 
-                showClientsSection();
+                if (name === "clients") {
 
-            } else {
+                    showClientsSection();
 
-                alert("هذه الوحدة سيتم بناؤها في المرحلة القادمة.");
+                } else {
+
+                    alert(
+                        "هذه الوحدة سيتم بناؤها في المرحلة القادمة."
+                    );
+
+                }
 
             }
-
-        });
+        );
 
     });
 
+
     document
         .getElementById("backToDashboard")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            showDashboard
+        );
 
-            document
-                .getElementById("clientsSection")
-                .classList.add("hidden");
 
-            document
-                .getElementById("dashboard")
-                .classList.remove("hidden");
+    document
+        .getElementById("backToClients")
+        .addEventListener(
+            "click",
+            showClientsSection
+        );
 
-        });
+}
+
+
+function showDashboard() {
+
+    document
+        .getElementById("clientsSection")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("clientDetailsSection")
+        .classList.add("hidden");
+
+
+    document
+        .getElementById("dashboard")
+        .classList.remove("hidden");
 
 }
 
@@ -114,177 +190,319 @@ function showClientsSection() {
         .getElementById("dashboard")
         .classList.add("hidden");
 
+
+    document
+        .getElementById("clientDetailsSection")
+        .classList.add("hidden");
+
+
     document
         .getElementById("clientsSection")
         .classList.remove("hidden");
+
 
     loadClients();
 
 }
 
 
+/* =========================================
+   أحداث وحدة العملاء
+========================================= */
+
 function setupClientEvents() {
+
 
     document
         .getElementById("addClientButton")
-        .addEventListener("click", () => {
+        .addEventListener(
+            "click",
+            () => {
 
-            openClientModal();
+                openClientModal();
 
-        });
+            }
+        );
 
 
     document
         .getElementById("closeClientModal")
-        .addEventListener("click", closeClientModal);
+        .addEventListener(
+            "click",
+            closeClientModal
+        );
 
 
     document
         .getElementById("cancelClientButton")
-        .addEventListener("click", closeClientModal);
+        .addEventListener(
+            "click",
+            closeClientModal
+        );
 
 
     document
         .getElementById("clientForm")
-        .addEventListener("submit", saveClient);
+        .addEventListener(
+            "submit",
+            saveClient
+        );
 
 
     document
         .getElementById("clientSearch")
-        .addEventListener("input", (event) => {
+        .addEventListener(
+            "input",
+            (event) => {
 
-            loadClients(event.target.value);
+                loadClients(
+                    event.target.value
+                );
 
-        });
+            }
+        );
 
 
     document
         .getElementById("clientsList")
-        .addEventListener("click", handleClientAction);
+        .addEventListener(
+            "click",
+            handleClientAction
+        );
 
 }
 
 
+/* =========================================
+   نافذة العميل
+========================================= */
+
 function openClientModal(client = null) {
 
-    const modal = document.getElementById("clientModal");
+    const modal =
+        document.getElementById(
+            "clientModal"
+        );
 
-    document.getElementById("clientForm").reset();
 
-    document.getElementById("clientId").value = "";
+    document
+        .getElementById("clientForm")
+        .reset();
+
+
+    document
+        .getElementById("clientId")
+        .value = "";
+
 
     if (client) {
 
-        document.getElementById("clientModalTitle").textContent =
+        document
+            .getElementById("clientModalTitle")
+            .textContent =
             "تعديل بيانات العميل";
 
-        document.getElementById("clientId").value =
+
+        document
+            .getElementById("clientId")
+            .value =
             client.id;
 
-        document.getElementById("fullName").value =
+
+        document
+            .getElementById("fullName")
+            .value =
             client.fullName || "";
 
-        document.getElementById("nationalId").value =
+
+        document
+            .getElementById("nationalId")
+            .value =
             client.nationalId || "";
 
-        document.getElementById("phone1").value =
+
+        document
+            .getElementById("phone1")
+            .value =
             client.phone1 || "";
 
-        document.getElementById("phone2").value =
+
+        document
+            .getElementById("phone2")
+            .value =
             client.phone2 || "";
 
-        document.getElementById("whatsapp").value =
+
+        document
+            .getElementById("whatsapp")
+            .value =
             client.whatsapp || "";
 
-        document.getElementById("address").value =
+
+        document
+            .getElementById("address")
+            .value =
             client.address || "";
 
-        document.getElementById("profession").value =
+
+        document
+            .getElementById("profession")
+            .value =
             client.profession || "";
 
-        document.getElementById("email").value =
+
+        document
+            .getElementById("email")
+            .value =
             client.email || "";
 
-        document.getElementById("notes").value =
+
+        document
+            .getElementById("notes")
+            .value =
             client.notes || "";
 
     } else {
 
-        document.getElementById("clientModalTitle").textContent =
+        document
+            .getElementById("clientModalTitle")
+            .textContent =
             "إضافة عميل";
 
     }
 
-    modal.classList.remove("hidden");
 
-    document.getElementById("fullName").focus();
+    modal
+        .classList
+        .remove("hidden");
+
+
+    document
+        .getElementById("fullName")
+        .focus();
 
 }
 
+
+/* =========================================
+   إغلاق نافذة العميل
+========================================= */
 
 function closeClientModal() {
 
     document
         .getElementById("clientModal")
-        .classList.add("hidden");
+        .classList
+        .add("hidden");
 
 }
 
+
+/* =========================================
+   حفظ العميل
+========================================= */
 
 function saveClient(event) {
 
     event.preventDefault();
 
+
     if (!db) {
 
-        alert("قاعدة البيانات لم تجهز بعد. حاول مرة أخرى.");
+        alert(
+            "قاعدة البيانات لم تجهز بعد."
+        );
 
         return;
 
     }
 
+
     const idValue =
-        document.getElementById("clientId").value;
+        document
+            .getElementById("clientId")
+            .value;
+
 
     const client = {
 
         fullName:
-            document.getElementById("fullName").value.trim(),
+            document
+                .getElementById("fullName")
+                .value
+                .trim(),
+
 
         nationalId:
-            document.getElementById("nationalId").value.trim(),
+            document
+                .getElementById("nationalId")
+                .value
+                .trim(),
+
 
         phone1:
-            document.getElementById("phone1").value.trim(),
+            document
+                .getElementById("phone1")
+                .value
+                .trim(),
+
 
         phone2:
-            document.getElementById("phone2").value.trim(),
+            document
+                .getElementById("phone2")
+                .value
+                .trim(),
+
 
         whatsapp:
-            document.getElementById("whatsapp").value.trim(),
+            document
+                .getElementById("whatsapp")
+                .value
+                .trim(),
+
 
         address:
-            document.getElementById("address").value.trim(),
+            document
+                .getElementById("address")
+                .value
+                .trim(),
+
 
         profession:
-            document.getElementById("profession").value.trim(),
+            document
+                .getElementById("profession")
+                .value
+                .trim(),
+
 
         email:
-            document.getElementById("email").value.trim(),
+            document
+                .getElementById("email")
+                .value
+                .trim(),
+
 
         notes:
-            document.getElementById("notes").value.trim(),
+            document
+                .getElementById("notes")
+                .value
+                .trim(),
+
 
         archived: false,
 
-        updatedAt: new Date().toISOString()
+
+        updatedAt:
+            new Date().toISOString()
 
     };
 
 
     if (!client.fullName) {
 
-        alert("من فضلك اكتب اسم العميل.");
+        alert(
+            "من فضلك اكتب اسم العميل."
+        );
 
         return;
 
@@ -297,22 +515,37 @@ function saveClient(event) {
             "readwrite"
         );
 
+
     const store =
-        transaction.objectStore(CLIENTS_STORE);
+        transaction.objectStore(
+            CLIENTS_STORE
+        );
 
 
     if (idValue) {
 
-        client.id = Number(idValue);
+        client.id =
+            Number(idValue);
+
 
         const request =
             store.put(client);
+
 
         request.onsuccess = () => {
 
             closeClientModal();
 
             loadClients();
+
+        };
+
+
+        request.onerror = () => {
+
+            alert(
+                "حدث خطأ أثناء تعديل العميل."
+            );
 
         };
 
@@ -321,8 +554,10 @@ function saveClient(event) {
         client.createdAt =
             new Date().toISOString();
 
+
         const request =
             store.add(client);
+
 
         request.onsuccess = () => {
 
@@ -332,17 +567,23 @@ function saveClient(event) {
 
         };
 
+
+        request.onerror = () => {
+
+            alert(
+                "حدث خطأ أثناء إضافة العميل."
+            );
+
+        };
+
     }
-
-
-    request.onerror = () => {
-
-        alert("حدث خطأ أثناء حفظ العميل.");
-
-    };
 
 }
 
+
+/* =========================================
+   تحميل العملاء
+========================================= */
 
 function loadClients(searchText = "") {
 
@@ -350,65 +591,80 @@ function loadClients(searchText = "") {
         return;
     }
 
+
     const transaction =
         db.transaction(
             CLIENTS_STORE,
             "readonly"
         );
 
+
     const store =
-        transaction.objectStore(CLIENTS_STORE);
+        transaction.objectStore(
+            CLIENTS_STORE
+        );
+
 
     const request =
         store.getAll();
 
+
     request.onsuccess = () => {
 
-        let clients = request.result
-            .filter(client => !client.archived);
+
+        let clients =
+            request.result.filter(
+                client =>
+                    !client.archived
+            );
 
 
         const search =
-            searchText.trim().toLowerCase();
+            searchText
+                .trim()
+                .toLowerCase();
 
 
         if (search) {
 
-            clients = clients.filter(client => {
+            clients =
+                clients.filter(
+                    client => {
 
-                return (
+                        return (
 
-                    (client.fullName || "")
-                        .toLowerCase()
-                        .includes(search)
+                            (client.fullName || "")
+                                .toLowerCase()
+                                .includes(search)
 
-                    ||
+                            ||
 
-                    (client.nationalId || "")
-                        .toLowerCase()
-                        .includes(search)
+                            (client.nationalId || "")
+                                .toLowerCase()
+                                .includes(search)
 
-                    ||
+                            ||
 
-                    (client.phone1 || "")
-                        .toLowerCase()
-                        .includes(search)
+                            (client.phone1 || "")
+                                .toLowerCase()
+                                .includes(search)
 
-                    ||
+                            ||
 
-                    (client.phone2 || "")
-                        .toLowerCase()
-                        .includes(search)
+                            (client.phone2 || "")
+                                .toLowerCase()
+                                .includes(search)
 
-                    ||
+                            ||
 
-                    (client.whatsapp || "")
-                        .toLowerCase()
-                        .includes(search)
+                            (client.whatsapp || "")
+                                .toLowerCase()
+                                .includes(search)
 
+                        );
+
+                    }
                 );
-
-            });
 
         }
 
@@ -420,18 +676,42 @@ function loadClients(searchText = "") {
 }
 
 
+/* =========================================
+   عرض العملاء
+========================================= */
+
 function renderClients(clients) {
 
     const container =
-        document.getElementById("clientsList");
+        document.getElementById(
+            "clientsList"
+        );
+
+
+    const countElement =
+        document.getElementById(
+            "clientsCount"
+        );
+
+
+    if (countElement) {
+
+        countElement.textContent =
+            clients.length;
+
+    }
 
 
     if (clients.length === 0) {
 
         container.innerHTML = `
+
             <div class="empty">
+
                 لا توجد بيانات عملاء.
+
             </div>
+
         `;
 
         return;
@@ -439,72 +719,133 @@ function renderClients(clients) {
     }
 
 
-    container.innerHTML = clients.map(client => {
+    container.innerHTML =
+        clients
+            .map(client => {
 
-        return `
+                return `
 
-            <div class="client-card">
-
-                <h3>
-                    ${escapeHtml(client.fullName)}
-                </h3>
-
-                <div class="client-info">
-
-                    ${client.nationalId
-                        ? `🪪 الرقم القومي: ${escapeHtml(client.nationalId)}<br>`
-                        : ""}
-
-                    ${client.phone1
-                        ? `📱 الهاتف: ${escapeHtml(client.phone1)}<br>`
-                        : ""}
-
-                    ${client.address
-                        ? `📍 العنوان: ${escapeHtml(client.address)}`
-                        : ""}
-
-                </div>
-
-                <div class="client-actions">
-
-                    <button
-                        class="edit-button"
-                        data-action="edit"
-                        data-id="${client.id}"
+                    <div
+                        class="client-card"
                     >
-                        تعديل
-                    </button>
 
-                    <button
-                        class="archive-button"
-                        data-action="archive"
-                        data-id="${client.id}"
-                    >
-                        أرشفة
-                    </button>
+                        <h3>
 
-                </div>
+                            ${escapeHtml(
+                                client.fullName
+                            )}
 
-            </div>
+                        </h3>
 
-        `;
 
-    }).join("");
+                        <div
+                            class="client-info"
+                        >
+
+                            ${
+                                client.nationalId
+                                ?
+                                `🪪 الرقم القومي:
+                                ${escapeHtml(
+                                    client.nationalId
+                                )}<br>`
+                                :
+                                ""
+                            }
+
+
+                            ${
+                                client.phone1
+                                ?
+                                `📱 الهاتف:
+                                ${escapeHtml(
+                                    client.phone1
+                                )}<br>`
+                                :
+                                ""
+                            }
+
+
+                            ${
+                                client.address
+                                ?
+                                `📍 العنوان:
+                                ${escapeHtml(
+                                    client.address
+                                )}`
+                                :
+                                ""
+                            }
+
+                        </div>
+
+
+                        <div
+                            class="client-actions"
+                        >
+
+                            <button
+                                class="edit-button"
+                                data-action="edit"
+                                data-id="${client.id}"
+                            >
+
+                                تعديل
+
+                            </button>
+
+
+                            <button
+                                class="archive-button"
+                                data-action="archive"
+                                data-id="${client.id}"
+                            >
+
+                                أرشفة
+
+                            </button>
+
+
+                            <button
+                                class="edit-button"
+                                data-action="open"
+                                data-id="${client.id}"
+                            >
+
+                                فتح السجل
+
+                            </button>
+
+                        </div>
+
+                    </div>
+
+                `;
+
+            })
+            .join("");
 
 }
 
+
+/* =========================================
+   التعامل مع أزرار العميل
+========================================= */
 
 function handleClientAction(event) {
 
     const button =
         event.target.closest("button");
 
+
     if (!button) {
         return;
     }
 
+
     const id =
         Number(button.dataset.id);
+
 
     const action =
         button.dataset.action;
@@ -523,8 +864,19 @@ function handleClientAction(event) {
 
     }
 
+
+    if (action === "open") {
+
+        openClientDetails(id);
+
+    }
+
 }
 
+
+/* =========================================
+   الحصول على عميل
+========================================= */
 
 function getClient(id) {
 
@@ -534,8 +886,12 @@ function getClient(id) {
             "readonly"
         );
 
+
     const store =
-        transaction.objectStore(CLIENTS_STORE);
+        transaction.objectStore(
+            CLIENTS_STORE
+        );
+
 
     const request =
         store.get(id);
@@ -545,7 +901,9 @@ function getClient(id) {
 
         if (request.result) {
 
-            openClientModal(request.result);
+            openClientModal(
+                request.result
+            );
 
         }
 
@@ -554,21 +912,24 @@ function getClient(id) {
 }
 
 
-function archiveClient(id) {
+/* =========================================
+   فتح سجل العميل
+========================================= */
 
-    if (!confirm("هل تريد أرشفة هذا العميل؟")) {
-        return;
-    }
-
+function openClientDetails(id) {
 
     const transaction =
         db.transaction(
             CLIENTS_STORE,
-            "readwrite"
+            "readonly"
         );
 
+
     const store =
-        transaction.objectStore(CLIENTS_STORE);
+        transaction.objectStore(
+            CLIENTS_STORE
+        );
+
 
     const request =
         store.get(id);
@@ -579,14 +940,346 @@ function archiveClient(id) {
         const client =
             request.result;
 
+
+        if (!client) {
+
+            alert(
+                "لم يتم العثور على العميل."
+            );
+
+            return;
+
+        }
+
+
+        renderClientDetails(client);
+
+
+        document
+            .getElementById("clientsSection")
+            .classList
+            .add("hidden");
+
+
+        document
+            .getElementById("dashboard")
+            .classList
+            .add("hidden");
+
+
+        document
+            .getElementById("clientDetailsSection")
+            .classList
+            .remove("hidden");
+
+    };
+
+}
+
+
+/* =========================================
+   عرض سجل العميل
+========================================= */
+
+function renderClientDetails(client) {
+
+    const container =
+        document.getElementById(
+            "clientDetails"
+        );
+
+
+    const createdDate =
+        formatDate(client.createdAt);
+
+
+    const updatedDate =
+        formatDate(client.updatedAt);
+
+
+    container.innerHTML = `
+
+        <div class="client-profile">
+
+            <div class="profile-header">
+
+                <div>
+
+                    <h2>
+
+                        ${escapeHtml(
+                            client.fullName
+                        )}
+
+                    </h2>
+
+                    <p>
+                        كود العميل:
+                        <strong>
+                            ${client.id}
+                        </strong>
+                    </p>
+
+                </div>
+
+
+                <button
+                    class="primary-button"
+                    id="detailsEditButton"
+                >
+
+                    تعديل البيانات
+
+                </button>
+
+            </div>
+
+
+            <div class="profile-grid">
+
+
+                <div class="profile-item">
+
+                    <span>
+                        الرقم القومي
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                client.nationalId ||
+                                "غير مسجل"
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        الهاتف
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                client.phone1 ||
+                                "غير مسجل"
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        هاتف آخر
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                client.phone2 ||
+                                "غير مسجل"
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        واتساب
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                client.whatsapp ||
+                                "غير مسجل"
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        المهنة
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                client.profession ||
+                                "غير مسجل"
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        البريد الإلكتروني
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                client.email ||
+                                "غير مسجل"
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item full">
+
+                    <span>
+                        العنوان
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                client.address ||
+                                "غير مسجل"
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item full">
+
+                    <span>
+                        ملاحظات
+                    </span>
+
+                    <strong>
+                        ${
+                            escapeHtml(
+                                client.notes ||
+                                "لا توجد ملاحظات"
+                            )
+                        }
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        تاريخ الإضافة
+                    </span>
+
+                    <strong>
+                        ${createdDate}
+                    </strong>
+
+                </div>
+
+
+                <div class="profile-item">
+
+                    <span>
+                        آخر تعديل
+                    </span>
+
+                    <strong>
+                        ${updatedDate}
+                    </strong>
+
+                </div>
+
+
+            </div>
+
+        </div>
+
+    `;
+
+
+    document
+        .getElementById("detailsEditButton")
+        .addEventListener(
+            "click",
+            () => {
+
+                openClientModal(client);
+
+            }
+        );
+
+}
+
+
+/* =========================================
+   أرشفة العميل
+========================================= */
+
+function archiveClient(id) {
+
+    if (
+        !confirm(
+            "هل تريد أرشفة هذا العميل؟"
+        )
+    ) {
+
+        return;
+
+    }
+
+
+    const transaction =
+        db.transaction(
+            CLIENTS_STORE,
+            "readwrite"
+        );
+
+
+    const store =
+        transaction.objectStore(
+            CLIENTS_STORE
+        );
+
+
+    const request =
+        store.get(id);
+
+
+    request.onsuccess = () => {
+
+        const client =
+            request.result;
+
+
         if (!client) {
             return;
         }
 
+
         client.archived = true;
+
 
         client.updatedAt =
             new Date().toISOString();
+
 
         store.put(client);
 
@@ -602,18 +1295,73 @@ function archiveClient(id) {
 }
 
 
+/* =========================================
+   تنسيق التاريخ
+========================================= */
+
+function formatDate(value) {
+
+    if (!value) {
+
+        return "غير مسجل";
+
+    }
+
+
+    const date =
+        new Date(value);
+
+
+    if (isNaN(date.getTime())) {
+
+        return "غير مسجل";
+
+    }
+
+
+    return date.toLocaleDateString(
+        "ar-EG",
+        {
+            year: "numeric",
+            month: "2-digit",
+            day: "2-digit"
+        }
+    );
+
+}
+
+
+/* =========================================
+   حماية عرض النصوص
+========================================= */
+
 function escapeHtml(value) {
 
     return String(value)
 
-        .replaceAll("&", "&amp;")
+        .replaceAll(
+            "&",
+            "&amp;"
+        )
 
-        .replaceAll("<", "&lt;")
+        .replaceAll(
+            "<",
+            "&lt;"
+        )
 
-        .replaceAll(">", "&gt;")
+        .replaceAll(
+            ">",
+            "&gt;"
+        )
 
-        .replaceAll('"', "&quot;")
+        .replaceAll(
+            '"',
+            "&quot;"
+        )
 
-        .replaceAll("'", "&#039;");
+        .replaceAll(
+            "'",
+            "&#039;"
+        );
 
 }
