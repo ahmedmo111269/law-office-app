@@ -470,10 +470,12 @@ function setupCaseEvents() {
     if (caseForm) {
 
         caseForm.addEventListener(
-            "submit",
-            (event) => {
+    "submit",
+    (event) => {
 
-                event.preventDefault();
+        alert("وصل زر حفظ القضية إلى JavaScript");
+
+        event.preventDefault();
 
 
                 const caseData = {
