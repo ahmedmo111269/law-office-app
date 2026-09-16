@@ -17,6 +17,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
     setupClientEvents();
 
+    setupCaseEvents();
+
 });
 
 
@@ -95,6 +97,8 @@ function openDatabase() {
 
         loadClients();
 
+        loadCases();
+
     };
 
 
@@ -133,7 +137,17 @@ function setupNavigation() {
 
                     showClientsSection();
 
-                } else {
+                }
+
+
+                else if (name === "cases") {
+
+                    showCasesSection();
+
+                }
+
+
+                else {
 
                     alert(
                         "هذه الوحدة سيتم بناؤها في المرحلة القادمة."
@@ -162,46 +176,85 @@ function setupNavigation() {
             showClientsSection
         );
 
+
+    document
+        .getElementById("backFromCases")
+        .addEventListener(
+            "click",
+            showDashboard
+        );
+
+}
+
+
+function hideAllSections() {
+
+    const sections = [
+        "dashboard",
+        "clientsSection",
+        "clientDetailsSection",
+        "casesSection"
+    ];
+
+
+    sections.forEach(id => {
+
+        const element =
+            document.getElementById(id);
+
+
+        if (element) {
+
+            element.classList.add("hidden");
+
+        }
+
+    });
+
 }
 
 
 function showDashboard() {
 
-    document
-        .getElementById("clientsSection")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("clientDetailsSection")
-        .classList.add("hidden");
+    hideAllSections();
 
 
     document
         .getElementById("dashboard")
-        .classList.remove("hidden");
+        .classList
+        .remove("hidden");
 
 }
 
 
 function showClientsSection() {
 
-    document
-        .getElementById("dashboard")
-        .classList.add("hidden");
-
-
-    document
-        .getElementById("clientDetailsSection")
-        .classList.add("hidden");
+    hideAllSections();
 
 
     document
         .getElementById("clientsSection")
-        .classList.remove("hidden");
+        .classList
+        .remove("hidden");
 
 
     loadClients();
+
+}
+
+
+function showCasesSection() {
+
+    hideAllSections();
+
+
+    document
+        .getElementById("casesSection")
+        .classList
+        .remove("hidden");
+
+
+    loadCases();
 
 }
 
@@ -269,6 +322,131 @@ function setupClientEvents() {
             "click",
             handleClientAction
         );
+
+}
+
+
+/* =========================================
+   أحداث وحدة القضايا
+========================================= */
+
+function setupCaseEvents() {
+
+    const addCaseButton =
+        document.getElementById(
+            "addCaseButton"
+        );
+
+
+    if (addCaseButton) {
+
+        addCaseButton.addEventListener(
+            "click",
+            () => {
+
+                alert(
+                    "سيتم بناء نموذج إضافة القضية في الخطوة التالية."
+                );
+
+            }
+        );
+
+    }
+
+
+    const caseSearch =
+        document.getElementById(
+            "caseSearch"
+        );
+
+
+    if (caseSearch) {
+
+        caseSearch.addEventListener(
+            "input",
+            (event) => {
+
+                loadCases(
+                    event.target.value
+                );
+
+            }
+        );
+
+    }
+
+}
+
+
+/* =========================================
+   تحميل القضايا
+========================================= */
+
+function loadCases(searchText = "") {
+
+    const container =
+        document.getElementById(
+            "casesList"
+        );
+
+
+    const countElement =
+        document.getElementById(
+            "casesCount"
+        );
+
+
+    if (!container) {
+
+        return;
+
+    }
+
+
+    /*
+       لا توجد قاعدة بيانات للقضايا
+       حتى الآن.
+    */
+
+    const search =
+        searchText
+            .trim()
+            .toLowerCase();
+
+
+    if (countElement) {
+
+        countElement.textContent = "0";
+
+    }
+
+
+    if (search) {
+
+        container.innerHTML = `
+
+            <div class="empty">
+
+                لا توجد قضايا تطابق البحث.
+
+            </div>
+
+        `;
+
+        return;
+
+    }
+
+
+    container.innerHTML = `
+
+        <div class="empty">
+
+            لا توجد قضايا مسجلة حتى الآن.
+
+        </div>
+
+    `;
 
 }
 
@@ -955,16 +1133,7 @@ function openClientDetails(id) {
         renderClientDetails(client);
 
 
-        document
-            .getElementById("clientsSection")
-            .classList
-            .add("hidden");
-
-
-        document
-            .getElementById("dashboard")
-            .classList
-            .add("hidden");
+        hideAllSections();
 
 
         document
