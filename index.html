@@ -732,7 +732,258 @@
 
 
 
+<!-- ========================= -->
+<!-- نافذة إضافة / تعديل قضية -->
+<!-- ========================= -->
 
+<div
+    id="caseModal"
+    class="modal hidden"
+>
+
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+
+            <h2 id="caseModalTitle">
+                إضافة قضية
+            </h2>
+
+
+            <button
+                id="closeCaseModal"
+                class="close-button"
+            >
+
+                ×
+
+            </button>
+
+
+        </div>
+
+
+
+        <form id="caseForm">
+
+
+            <input
+                type="hidden"
+                id="caseId"
+            >
+
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group">
+
+                    <label for="caseNumber">
+                        رقم القضية *
+                    </label>
+
+                    <input
+                        id="caseNumber"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="caseYear">
+                        السنة *
+                    </label>
+
+                    <input
+                        id="caseYear"
+                        type="number"
+                        min="1900"
+                        max="2100"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="caseType">
+                        نوع القضية
+                    </label>
+
+                    <input
+                        id="caseType"
+                        placeholder="مثال: مدني"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="caseLevel">
+                        درجة التقاضي
+                    </label>
+
+                    <input
+                        id="caseLevel"
+                        placeholder="مثال: أول درجة"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="caseCourt">
+                        المحكمة
+                    </label>
+
+                    <input
+                        id="caseCourt"
+                        placeholder="مثال: محكمة طوخ الجزئية"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="caseCircuit">
+                        الدائرة
+                    </label>
+
+                    <input
+                        id="caseCircuit"
+                        placeholder="مثال: مدني"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group full">
+
+                    <label for="caseSubject">
+                        موضوع القضية
+                    </label>
+
+                    <input
+                        id="caseSubject"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="caseRole">
+                        صفة المكتب
+                    </label>
+
+                    <input
+                        id="caseRole"
+                        placeholder="مثال: وكيل المدعي"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="caseStatus">
+                        حالة القضية
+                    </label>
+
+                    <input
+                        id="caseStatus"
+                        placeholder="مثال: متداولة"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="caseFilingDate">
+                        تاريخ القيد
+                    </label>
+
+                    <input
+                        id="caseFilingDate"
+                        type="date"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group full">
+
+                    <label for="caseNotes">
+                        ملاحظات
+                    </label>
+
+                    <textarea
+                        id="caseNotes"
+                        rows="4"
+                    ></textarea>
+
+                </div>
+
+
+            </div>
+
+
+
+            <div class="form-actions">
+
+
+                <button
+                    type="button"
+                    id="cancelCaseButton"
+                    class="secondary-button"
+                >
+
+                    إلغاء
+
+                </button>
+
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+
+                    حفظ القضية
+
+                </button>
+
+
+            </div>
+
+
+        </form>
+
+
+    </div>
+
+
+</div>
 <footer>
 
     <p>
