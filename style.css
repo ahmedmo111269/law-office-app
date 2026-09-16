@@ -1,0 +1,144 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: Arial, Tahoma, sans-serif;
+    background: #f3f4f6;
+    color: #111827;
+}
+
+.topbar {
+    background: #1f2937;
+    color: white;
+    padding: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.topbar h1 {
+    margin: 0;
+    font-size: 24px;
+}
+
+.topbar p {
+    margin: 5px 0 0;
+    opacity: 0.8;
+}
+
+#menuButton {
+    background: transparent;
+    border: 0;
+    color: white;
+    font-size: 26px;
+}
+
+.container {
+    width: min(1100px, 94%);
+    margin: 20px auto;
+}
+
+.search-box {
+    margin-bottom: 20px;
+}
+
+#globalSearch {
+    width: 100%;
+    padding: 16px;
+    border: 1px solid #d1d5db;
+    border-radius: 12px;
+    font-size: 17px;
+    background: white;
+}
+
+.dashboard {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 15px;
+}
+
+.module {
+    border: 1px solid #e5e7eb;
+    background: white;
+    border-radius: 14px;
+    padding: 20px;
+    min-height: 130px;
+    cursor: pointer;
+    text-align: center;
+}
+
+.module:hover {
+    transform: translateY(-2px);
+}
+
+.module span {
+    display: block;
+    font-size: 32px;
+    margin-bottom: 10px;
+}
+
+.module strong {
+    display: block;
+    font-size: 17px;
+}
+
+.module small {
+    display: block;
+    margin-top: 7px;
+    color: #6b7280;
+}
+
+.today {
+    background: white;
+    margin-top: 25px;
+    padding: 20px;
+    border-radius: 14px;
+}
+
+.today h2 {
+    margin-top: 0;
+}
+
+.empty {
+    color: #6b7280;
+}
+
+footer {
+    text-align: center;
+    padding: 30px;
+    color: #6b7280;
+}
+
+
+@media (max-width: 700px) {
+
+    .dashboard {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .module {
+        min-height: 120px;
+        padding: 15px;
+    }
+
+    .topbar h1 {
+        font-size: 20px;
+    }
+
+}
+
+
+@media (max-width: 400px) {
+
+    .dashboard {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+    }
+
+    .module {
+        padding: 12px;
+    }
+
+}
