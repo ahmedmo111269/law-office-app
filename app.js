@@ -40,6 +40,10 @@ function openDatabase() {
         const database = event.target.result;
 
 
+        /* =========================================
+           إنشاء مخزن العملاء
+        ========================================= */
+
         if (!database.objectStoreNames.contains(CLIENTS_STORE)) {
 
             const store =
@@ -89,18 +93,25 @@ function openDatabase() {
 
         }
 
+
+        /* =========================================
+           إنشاء مخزن القضايا
+        ========================================= */
+
+        if (!database.objectStoreNames.contains(CASES_STORE)) {
+
+            database.createObjectStore(
+                CASES_STORE,
+                {
+                    keyPath: "id",
+                    autoIncrement: true
+                }
+            );
+
+        }
+
     };
-    if (!database.objectStoreNames.contains(CASES_STORE)) {
 
-        database.createObjectStore(
-            CASES_STORE,
-            {
-                keyPath: "id",
-                autoIncrement: true
-            }
-        );
-
-    }
 
     request.onsuccess = (event) => {
 
@@ -122,7 +133,6 @@ function openDatabase() {
     };
 
 }
-
 
 /* =========================================
    التنقل بين الصفحات
