@@ -359,14 +359,36 @@ function setupCaseEvents() {
         );
 
 
+    const caseModal =
+        document.getElementById(
+            "caseModal"
+        );
+
+
+    const closeCaseModal =
+        document.getElementById(
+            "closeCaseModal"
+        );
+
+
+    const cancelCaseButton =
+        document.getElementById(
+            "cancelCaseButton"
+        );
+
+
+    /* =========================================
+       فتح نافذة إضافة قضية
+    ========================================= */
+
     if (addCaseButton) {
 
         addCaseButton.addEventListener(
             "click",
             () => {
 
-                alert(
-                    "سيتم بناء نموذج إضافة القضية في الخطوة التالية."
+                caseModal.classList.remove(
+                    "hidden"
                 );
 
             }
@@ -374,6 +396,46 @@ function setupCaseEvents() {
 
     }
 
+
+    /* =========================================
+       إغلاق النافذة
+    ========================================= */
+
+    if (closeCaseModal) {
+
+        closeCaseModal.addEventListener(
+            "click",
+            () => {
+
+                caseModal.classList.add(
+                    "hidden"
+                );
+
+            }
+        );
+
+    }
+
+
+    if (cancelCaseButton) {
+
+        cancelCaseButton.addEventListener(
+            "click",
+            () => {
+
+                caseModal.classList.add(
+                    "hidden"
+                );
+
+            }
+        );
+
+    }
+
+
+    /* =========================================
+       البحث في القضايا
+    ========================================= */
 
     const caseSearch =
         document.getElementById(
