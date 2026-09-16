@@ -1,210 +1,662 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
+
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="theme-color" content="#1f2937">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <meta
+        name="theme-color"
+        content="#1f2937"
+    >
+
     <title>مكتب المحاماة</title>
-    <link rel="stylesheet" href="style.css">
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
 </head>
+
 
 <body>
 
+
 <header class="topbar">
+
     <div>
+
         <h1>⚖️ مكتب المحاماة</h1>
-        <p>نظام إدارة المكتب</p>
+
+        <p>
+            نظام إدارة المكتب
+        </p>
+
     </div>
+
 </header>
+
+
 
 <main class="container">
 
-    <section class="search-box">
-        <input
-            id="globalSearch"
-            type="search"
-            placeholder="🔎 ابحث في بيانات المكتب..."
+
+    <!-- ========================= -->
+    <!-- لوحة التحكم -->
+    <!-- ========================= -->
+
+    <section
+        id="dashboard"
+        class="dashboard"
+    >
+
+
+        <button
+            class="module"
+            data-module="clients"
         >
-    </section>
 
-    <section id="dashboard" class="dashboard">
-
-        <button class="module" data-module="clients">
             <span>👥</span>
-            <strong>العملاء</strong>
-            <small>إدارة العملاء</small>
+
+            <strong>
+                العملاء
+            </strong>
+
+            <small>
+                إدارة العملاء
+            </small>
+
         </button>
 
-        <button class="module" data-module="cases">
+
+
+        <button
+            class="module"
+            data-module="cases"
+        >
+
             <span>⚖️</span>
-            <strong>القضايا</strong>
-            <small>إدارة القضايا</small>
+
+            <strong>
+                القضايا
+            </strong>
+
+            <small>
+                إدارة القضايا
+            </small>
+
         </button>
 
-        <button class="module" data-module="hearings">
+
+
+        <button
+            class="module"
+            data-module="hearings"
+        >
+
             <span>📅</span>
-            <strong>الجلسات</strong>
-            <small>جلسات اليوم والمواعيد</small>
+
+            <strong>
+                الجلسات
+            </strong>
+
+            <small>
+                جلسات اليوم والمواعيد
+            </small>
+
         </button>
 
-        <button class="module" data-module="opponents">
+
+
+        <button
+            class="module"
+            data-module="opponents"
+        >
+
             <span>👤</span>
-            <strong>الخصوم</strong>
-            <small>بيانات الخصوم</small>
+
+            <strong>
+                الخصوم
+            </strong>
+
+            <small>
+                بيانات الخصوم
+            </small>
+
         </button>
 
-        <button class="module" data-module="procedures">
+
+
+        <button
+            class="module"
+            data-module="procedures"
+        >
+
             <span>📋</span>
-            <strong>الإجراءات</strong>
-            <small>متابعة الإجراءات</small>
+
+            <strong>
+                الإجراءات
+            </strong>
+
+            <small>
+                متابعة الإجراءات
+            </small>
+
         </button>
 
-        <button class="module" data-module="reports">
+
+
+        <button
+            class="module"
+            data-module="reports"
+        >
+
             <span>📊</span>
-            <strong>التقارير</strong>
-            <small>تقارير المكتب</small>
+
+            <strong>
+                التقارير
+            </strong>
+
+            <small>
+                تقارير المكتب
+            </small>
+
         </button>
 
-        <button class="module" data-module="backup">
+
+
+        <button
+            class="module"
+            data-module="backup"
+        >
+
             <span>💾</span>
-            <strong>النسخ الاحتياطي</strong>
-            <small>نسخ واستعادة البيانات</small>
+
+            <strong>
+                النسخ الاحتياطي
+            </strong>
+
+            <small>
+                نسخ واستعادة البيانات
+            </small>
+
         </button>
 
-        <button class="module" data-module="settings">
+
+
+        <button
+            class="module"
+            data-module="settings"
+        >
+
             <span>⚙️</span>
-            <strong>الإعدادات</strong>
-            <small>إعدادات البرنامج</small>
+
+            <strong>
+                الإعدادات
+            </strong>
+
+            <small>
+                إعدادات البرنامج
+            </small>
+
         </button>
+
 
     </section>
 
-    <section id="clientsSection" class="page-section hidden">
+
+
+
+    <!-- ========================= -->
+    <!-- صفحة العملاء -->
+    <!-- ========================= -->
+
+    <section
+        id="clientsSection"
+        class="page-section hidden"
+    >
+
 
         <div class="section-header">
+
+
             <div>
-                <h2>👥 العملاء</h2>
-                <p>إدارة بيانات العملاء والبحث فيها</p>
+
+                <h2>
+                    👥 العملاء
+                </h2>
+
+                <p>
+                    إدارة بيانات العملاء
+                </p>
+
             </div>
 
-            <button id="backToDashboard" class="secondary-button">
+
+            <button
+                id="backToDashboard"
+                class="secondary-button"
+            >
+
                 ← الرئيسية
+
             </button>
+
+
         </div>
 
+
+
+        <div class="clients-summary">
+
+            <div>
+
+                <strong id="clientsCount">
+                    0
+                </strong>
+
+                <span>
+                    عميل
+                </span>
+
+            </div>
+
+        </div>
+
+
+
         <div class="toolbar">
+
+
             <input
                 id="clientSearch"
                 type="search"
-                placeholder="🔎 ابحث عن اسم العميل أو الهاتف أو الرقم القومي..."
+                placeholder="🔎 ابحث بالاسم أو الهاتف أو الرقم القومي..."
             >
 
-            <button id="addClientButton" class="primary-button">
+
+            <button
+                id="addClientButton"
+                class="primary-button"
+            >
+
                 + إضافة عميل
+
             </button>
+
+
         </div>
 
-        <div id="clientsList" class="clients-list"></div>
+
+
+        <div
+            id="clientsList"
+            class="clients-list"
+        ></div>
+
 
     </section>
 
-</main>
 
-<div id="clientModal" class="modal hidden">
 
-    <div class="modal-content">
 
-        <div class="modal-header">
-            <h2 id="clientModalTitle">إضافة عميل</h2>
+    <!-- ========================= -->
+    <!-- صفحة تفاصيل العميل -->
+    <!-- ========================= -->
 
-            <button id="closeClientModal" class="close-button">
-                ×
-            </button>
-        </div>
+    <section
+        id="clientDetailsSection"
+        class="page-section hidden"
+    >
 
-        <form id="clientForm">
 
-            <input type="hidden" id="clientId">
+        <div class="section-header">
 
-            <div class="form-grid">
 
-                <div class="form-group full">
-                    <label for="fullName">اسم العميل *</label>
-                    <input id="fullName" required>
-                </div>
+            <div>
 
-                <div class="form-group">
-                    <label for="nationalId">الرقم القومي</label>
-                    <input id="nationalId" inputmode="numeric">
-                </div>
+                <h2>
+                    👤 سجل العميل
+                </h2>
 
-                <div class="form-group">
-                    <label for="phone1">رقم الهاتف</label>
-                    <input id="phone1" type="tel">
-                </div>
-
-                <div class="form-group">
-                    <label for="phone2">هاتف آخر</label>
-                    <input id="phone2" type="tel">
-                </div>
-
-                <div class="form-group">
-                    <label for="whatsapp">واتساب</label>
-                    <input id="whatsapp" type="tel">
-                </div>
-
-                <div class="form-group full">
-                    <label for="address">العنوان</label>
-                    <input id="address">
-                </div>
-
-                <div class="form-group">
-                    <label for="profession">المهنة</label>
-                    <input id="profession">
-                </div>
-
-                <div class="form-group">
-                    <label for="email">البريد الإلكتروني</label>
-                    <input id="email" type="email">
-                </div>
-
-                <div class="form-group full">
-                    <label for="notes">ملاحظات</label>
-                    <textarea id="notes" rows="4"></textarea>
-                </div>
+                <p>
+                    البيانات والتعاملات المرتبطة بالعميل
+                </p>
 
             </div>
 
+
+            <button
+                id="backToClients"
+                class="secondary-button"
+            >
+
+                ← العودة للعملاء
+
+            </button>
+
+
+        </div>
+
+
+
+        <div
+            id="clientDetails"
+            class="client-details"
+        ></div>
+
+
+
+        <div class="client-related">
+
+
+            <div class="related-box">
+
+                <h3>
+                    ⚖️ القضايا
+                </h3>
+
+                <p>
+                    سيتم عرض القضايا الخاصة بالعميل هنا.
+                </p>
+
+            </div>
+
+
+
+            <div class="related-box">
+
+                <h3>
+                    📅 الجلسات
+                </h3>
+
+                <p>
+                    سيتم عرض جلسات العميل هنا.
+                </p>
+
+            </div>
+
+
+
+            <div class="related-box">
+
+                <h3>
+                    📋 الإجراءات
+                </h3>
+
+                <p>
+                    سيتم عرض إجراءات العميل هنا.
+                </p>
+
+            </div>
+
+
+
+            <div class="related-box">
+
+                <h3>
+                    ⚖️ الأحكام
+                </h3>
+
+                <p>
+                    سيتم عرض أحكام قضايا العميل هنا.
+                </p>
+
+            </div>
+
+
+        </div>
+
+
+    </section>
+
+
+</main>
+
+
+
+
+<!-- ========================= -->
+<!-- نافذة إضافة / تعديل عميل -->
+<!-- ========================= -->
+
+<div
+    id="clientModal"
+    class="modal hidden"
+>
+
+
+    <div class="modal-content">
+
+
+        <div class="modal-header">
+
+
+            <h2 id="clientModalTitle">
+                إضافة عميل
+            </h2>
+
+
+            <button
+                id="closeClientModal"
+                class="close-button"
+            >
+
+                ×
+
+            </button>
+
+
+        </div>
+
+
+
+        <form id="clientForm">
+
+
+            <input
+                type="hidden"
+                id="clientId"
+            >
+
+
+
+            <div class="form-grid">
+
+
+                <div class="form-group full">
+
+                    <label for="fullName">
+                        اسم العميل *
+                    </label>
+
+                    <input
+                        id="fullName"
+                        required
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="nationalId">
+                        الرقم القومي
+                    </label>
+
+                    <input
+                        id="nationalId"
+                        inputmode="numeric"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="phone1">
+                        رقم الهاتف
+                    </label>
+
+                    <input
+                        id="phone1"
+                        type="tel"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="phone2">
+                        هاتف آخر
+                    </label>
+
+                    <input
+                        id="phone2"
+                        type="tel"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="whatsapp">
+                        واتساب
+                    </label>
+
+                    <input
+                        id="whatsapp"
+                        type="tel"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group full">
+
+                    <label for="address">
+                        العنوان
+                    </label>
+
+                    <input
+                        id="address"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="profession">
+                        المهنة
+                    </label>
+
+                    <input
+                        id="profession"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group">
+
+                    <label for="email">
+                        البريد الإلكتروني
+                    </label>
+
+                    <input
+                        id="email"
+                        type="email"
+                    >
+
+                </div>
+
+
+
+                <div class="form-group full">
+
+                    <label for="notes">
+                        ملاحظات
+                    </label>
+
+                    <textarea
+                        id="notes"
+                        rows="4"
+                    ></textarea>
+
+                </div>
+
+
+            </div>
+
+
+
             <div class="form-actions">
+
 
                 <button
                     type="button"
                     id="cancelClientButton"
                     class="secondary-button"
                 >
+
                     إلغاء
+
                 </button>
+
 
                 <button
                     type="submit"
                     class="primary-button"
                 >
+
                     حفظ العميل
+
                 </button>
+
 
             </div>
 
+
         </form>
+
 
     </div>
 
+
 </div>
 
+
+
+
 <footer>
-    <p>Law Office Manager — الإصدار 0.2</p>
+
+    <p>
+        Law Office Manager — الإصدار 0.3
+    </p>
+
 </footer>
+
+
 
 <script src="app.js"></script>
 
+
 </body>
+
 </html>
