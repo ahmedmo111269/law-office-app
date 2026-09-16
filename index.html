@@ -2,96 +2,76 @@
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
-
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1.0">
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="theme-color" content="#1f2937">
-
     <title>مكتب المحاماة</title>
-
     <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
 
 <header class="topbar">
-
     <div>
         <h1>⚖️ مكتب المحاماة</h1>
         <p>نظام إدارة المكتب</p>
     </div>
-
-    <button id="menuButton">☰</button>
-
 </header>
-
 
 <main class="container">
 
     <section class="search-box">
-
         <input
             id="globalSearch"
             type="search"
             placeholder="🔎 ابحث في بيانات المكتب..."
         >
-
     </section>
 
+    <section id="dashboard" class="dashboard">
 
-    <section class="dashboard">
-
-        <button class="module">
+        <button class="module" data-module="clients">
             <span>👥</span>
             <strong>العملاء</strong>
             <small>إدارة العملاء</small>
         </button>
 
-
-        <button class="module">
+        <button class="module" data-module="cases">
             <span>⚖️</span>
             <strong>القضايا</strong>
             <small>إدارة القضايا</small>
         </button>
 
-
-        <button class="module">
+        <button class="module" data-module="hearings">
             <span>📅</span>
             <strong>الجلسات</strong>
             <small>جلسات اليوم والمواعيد</small>
         </button>
 
-
-        <button class="module">
+        <button class="module" data-module="opponents">
             <span>👤</span>
             <strong>الخصوم</strong>
             <small>بيانات الخصوم</small>
         </button>
 
-
-        <button class="module">
+        <button class="module" data-module="procedures">
             <span>📋</span>
             <strong>الإجراءات</strong>
             <small>متابعة الإجراءات</small>
         </button>
 
-
-        <button class="module">
+        <button class="module" data-module="reports">
             <span>📊</span>
             <strong>التقارير</strong>
             <small>تقارير المكتب</small>
         </button>
 
-
-        <button class="module">
+        <button class="module" data-module="backup">
             <span>💾</span>
             <strong>النسخ الاحتياطي</strong>
             <small>نسخ واستعادة البيانات</small>
         </button>
 
-
-        <button class="module">
+        <button class="module" data-module="settings">
             <span>⚙️</span>
             <strong>الإعدادات</strong>
             <small>إعدادات البرنامج</small>
@@ -99,30 +79,130 @@
 
     </section>
 
+    <section id="clientsSection" class="page-section hidden">
 
-    <section class="today">
+        <div class="section-header">
+            <div>
+                <h2>👥 العملاء</h2>
+                <p>إدارة بيانات العملاء والبحث فيها</p>
+            </div>
 
-        <h2>📅 جلسات اليوم</h2>
-
-        <div id="todayHearings">
-
-            <p class="empty">
-                لا توجد جلسات مسجلة لليوم.
-            </p>
-
+            <button id="backToDashboard" class="secondary-button">
+                ← الرئيسية
+            </button>
         </div>
+
+        <div class="toolbar">
+            <input
+                id="clientSearch"
+                type="search"
+                placeholder="🔎 ابحث عن اسم العميل أو الهاتف أو الرقم القومي..."
+            >
+
+            <button id="addClientButton" class="primary-button">
+                + إضافة عميل
+            </button>
+        </div>
+
+        <div id="clientsList" class="clients-list"></div>
 
     </section>
 
 </main>
 
+<div id="clientModal" class="modal hidden">
+
+    <div class="modal-content">
+
+        <div class="modal-header">
+            <h2 id="clientModalTitle">إضافة عميل</h2>
+
+            <button id="closeClientModal" class="close-button">
+                ×
+            </button>
+        </div>
+
+        <form id="clientForm">
+
+            <input type="hidden" id="clientId">
+
+            <div class="form-grid">
+
+                <div class="form-group full">
+                    <label for="fullName">اسم العميل *</label>
+                    <input id="fullName" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="nationalId">الرقم القومي</label>
+                    <input id="nationalId" inputmode="numeric">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone1">رقم الهاتف</label>
+                    <input id="phone1" type="tel">
+                </div>
+
+                <div class="form-group">
+                    <label for="phone2">هاتف آخر</label>
+                    <input id="phone2" type="tel">
+                </div>
+
+                <div class="form-group">
+                    <label for="whatsapp">واتساب</label>
+                    <input id="whatsapp" type="tel">
+                </div>
+
+                <div class="form-group full">
+                    <label for="address">العنوان</label>
+                    <input id="address">
+                </div>
+
+                <div class="form-group">
+                    <label for="profession">المهنة</label>
+                    <input id="profession">
+                </div>
+
+                <div class="form-group">
+                    <label for="email">البريد الإلكتروني</label>
+                    <input id="email" type="email">
+                </div>
+
+                <div class="form-group full">
+                    <label for="notes">ملاحظات</label>
+                    <textarea id="notes" rows="4"></textarea>
+                </div>
+
+            </div>
+
+            <div class="form-actions">
+
+                <button
+                    type="button"
+                    id="cancelClientButton"
+                    class="secondary-button"
+                >
+                    إلغاء
+                </button>
+
+                <button
+                    type="submit"
+                    class="primary-button"
+                >
+                    حفظ العميل
+                </button>
+
+            </div>
+
+        </form>
+
+    </div>
+
+</div>
 
 <footer>
-
-    <p>Law Office Manager — الإصدار 0.1</p>
-
+    <p>Law Office Manager — الإصدار 0.2</p>
 </footer>
-
 
 <script src="app.js"></script>
 
