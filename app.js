@@ -90,7 +90,17 @@ function openDatabase() {
         }
 
     };
+    if (!database.objectStoreNames.contains(CASES_STORE)) {
 
+        database.createObjectStore(
+            CASES_STORE,
+            {
+                keyPath: "id",
+                autoIncrement: true
+            }
+        );
+
+    }
 
     request.onsuccess = (event) => {
 
