@@ -598,49 +598,82 @@ function setupCaseEvents() {
                 };
 
 
-                const transaction =
-                    db.transaction(
-                        [CASES_STORE],
-                        "readwrite"
-                    );
+           const transaction =
+    db.transaction(
+        [CASES_STORE, "caseClients"],
+        "readwrite"
+    );
 
 
-                const store =
-                    transaction.objectStore(
-                        CASES_STORE
-                    );
+const caseStore =
+    transaction.objectStore(
+        CASES_STORE
+    );
 
 
-                store.add(caseData);
+const relationStore =
+    transaction.objectStore(
+        "caseClients"
+    );
 
 
-                transaction.oncomplete = () => {
-
-                    alert(
-                        "تم حفظ القضية بنجاح."
-                    );
+const addRequest =
+    caseStore.add(caseData);
 
 
-                    caseForm.reset();
+addRequest.onsuccess = () => {
+
+    const caseId =
+        addRequest.result;
+
+    const clientId =
+        document.getElementById(
+            "caseClientSelect"
+        ).value;
 
 
-                    caseModal.classList.add(
-                        "hidden"
-                    );
+    if (clientId) {
+
+        relationStore.add({
+
+            caseId: caseId,
+
+            clientId: Number(clientId)
+
+        });
+
+    }
+
+};
 
 
-                    loadCases();
+transaction.oncomplete = () => {
 
-                };
+    alert(
+        "تم حفظ القضية بنجاح."
+    );
 
 
-                transaction.onerror = () => {
+    caseForm.reset();
 
-                    alert(
-                        "حدث خطأ أثناء حفظ القضية."
-                    );
 
-                };
+    caseModal.classList.add(
+        "hidden"
+    );
+
+
+    loadCases();
+
+};
+
+
+transaction.onerror = () => {
+
+    alert(
+        "حدث خطأ أثناء حفظ القضية."
+    );
+
+};
 
             }
         );
