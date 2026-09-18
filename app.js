@@ -113,16 +113,13 @@ function openDatabase() {
     };
 
 
-    request.onsuccess = (event) => {
+  request.onsuccess = (event) => {
 
-        db = event.target.result;
+    db = event.target.result;
 
-        loadClients();
+    loadClients();
 
-        loadCases();
-
-    };
-
+};
 
     request.onerror = () => {
 
