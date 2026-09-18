@@ -620,6 +620,8 @@ const relationStore =
 const addRequest =
     caseStore.add(caseData);
 
+console.log("ADD REQUEST:", addRequest);
+
 
 addRequest.onsuccess = () => {
 
