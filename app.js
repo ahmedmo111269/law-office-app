@@ -507,199 +507,212 @@ function setupCaseEvents() {
        حفظ القضية
     ========================================= */
 
-    const caseForm =
-        document.getElementById(
-            "caseForm"
-        );
-
-
-    if (caseForm) {
-
-        caseForm.addEventListener(
-    "submit",
-    (event) => {
-
-      
-        event.preventDefault();
-
-
-                const caseData = {
-
-                    caseNumber:
-                        document
-                            .getElementById("caseNumber")
-                            .value
-                            .trim(),
-
-                    caseYear:
-                        document
-                            .getElementById("caseYear")
-                            .value,
-
-                    caseType:
-                        document
-                            .getElementById("caseType")
-                            .value
-                            .trim(),
-
-                    caseLevel:
-                        document
-                            .getElementById("caseLevel")
-                            .value
-                            .trim(),
-
-                    caseCourt:
-                        document
-                            .getElementById("caseCourt")
-                            .value
-                            .trim(),
-
-                    caseCircuit:
-                        document
-                            .getElementById("caseCircuit")
-                            .value
-                            .trim(),
-
-                    caseSubject:
-                        document
-                            .getElementById("caseSubject")
-                            .value
-                            .trim(),
-
-                    caseRole:
-                        document
-                            .getElementById("caseRole")
-                            .value
-                            .trim(),
-
-                    caseStatus:
-                        document
-                            .getElementById("caseStatus")
-                            .value
-                            .trim(),
-
-                    caseFilingDate:
-                        document
-                            .getElementById("caseFilingDate")
-                            .value,
-
-                    caseNotes:
-                        document
-                            .getElementById("caseNotes")
-                            .value
-                            .trim(),
-
-                    createdAt:
-                        new Date().toISOString(),
-
-                    updatedAt:
-                        new Date().toISOString()
-
-                };
-
-
-           const transaction =
-    db.transaction(
-        [CASES_STORE, "caseClients"],
-        "readwrite"
+   const caseForm =
+    document.getElementById(
+        "caseForm"
     );
 
 
-const caseStore =
-    transaction.objectStore(
-        CASES_STORE
+if (caseForm) {
+
+    caseForm.addEventListener(
+        "submit",
+        (event) => {
+
+            event.preventDefault();
+
+
+            const caseData = {
+
+                caseNumber:
+                    document
+                        .getElementById("caseNumber")
+                        .value
+                        .trim(),
+
+                caseYear:
+                    document
+                        .getElementById("caseYear")
+                        .value,
+
+                caseType:
+                    document
+                        .getElementById("caseType")
+                        .value
+                        .trim(),
+
+                caseLevel:
+                    document
+                        .getElementById("caseLevel")
+                        .value
+                        .trim(),
+
+                caseCourt:
+                    document
+                        .getElementById("caseCourt")
+                        .value
+                        .trim(),
+
+                caseCircuit:
+                    document
+                        .getElementById("caseCircuit")
+                        .value
+                        .trim(),
+
+                caseSubject:
+                    document
+                        .getElementById("caseSubject")
+                        .value
+                        .trim(),
+
+                caseRole:
+                    document
+                        .getElementById("caseRole")
+                        .value
+                        .trim(),
+
+                caseStatus:
+                    document
+                        .getElementById("caseStatus")
+                        .value
+                        .trim(),
+
+                caseFilingDate:
+                    document
+                        .getElementById("caseFilingDate")
+                        .value,
+
+                caseNotes:
+                    document
+                        .getElementById("caseNotes")
+                        .value
+                        .trim(),
+
+                createdAt:
+                    new Date().toISOString(),
+
+                updatedAt:
+                    new Date().toISOString()
+
+            };
+
+
+            const transaction =
+                db.transaction(
+                    [CASES_STORE, "caseClients"],
+                    "readwrite"
+                );
+
+
+            const caseStore =
+                transaction.objectStore(
+                    CASES_STORE
+                );
+
+
+            const relationStore =
+                transaction.objectStore(
+                    "caseClients"
+                );
+
+
+            const addRequest =
+                caseStore.add(caseData);
+
+
+            addRequest.onsuccess = () => {
+
+                const caseId =
+                    addRequest.result;
+
+                const clientId =
+                    document
+                        .getElementById(
+                            "caseClientSelect"
+                        )
+                        .value;
+
+
+                console.log(
+                    "CASE ID:",
+                    caseId
+                );
+
+                console.log(
+                    "CLIENT ID:",
+                    clientId
+                );
+
+
+                if (clientId) {
+
+                    const relationRequest =
+                        relationStore.add({
+
+                            caseId:
+                                caseId,
+
+                            clientId:
+                                Number(clientId)
+
+                        });
+
+
+                    relationRequest.onsuccess = () => {
+
+                        console.log(
+                            "تم حفظ العلاقة:",
+                            relationRequest.result
+                        );
+
+                    };
+
+
+                    relationRequest.onerror = () => {
+
+                        console.error(
+                            "خطأ في حفظ العلاقة:",
+                            relationRequest.error
+                        );
+
+                    };
+
+                }
+
+            };
+
+
+            transaction.oncomplete = () => {
+
+                alert(
+                    "تم حفظ القضية بنجاح."
+                );
+
+
+                caseForm.reset();
+
+
+                caseModal.classList.add(
+                    "hidden"
+                );
+
+
+                loadCases();
+
+            };
+
+
+            transaction.onerror = () => {
+
+                alert(
+                    "حدث خطأ أثناء حفظ القضية."
+                );
+
+            };
+
+        }
     );
 
-
-const relationStore =
-    transaction.objectStore(
-        "caseClients"
-    );
-
-
-const addRequest =
-    caseStore.add(caseData);
-
-console.log("ADD REQUEST:", addRequest);
-
-
-addRequest.onsuccess = () => {
-
-    const caseId =
-        addRequest.result;
-
-    const clientId =
-        document.getElementById(
-            "caseClientSelect"
-        ).value;
-
-
-if (clientId) {
-
-    const relationRequest =
-        relationStore.add({
-
-            caseId: caseId,
-
-            clientId: Number(clientId)
-
-        });
-
-
-    relationRequest.onsuccess = () => {
-
-        console.log(
-            "تم حفظ العلاقة:",
-            relationRequest.result
-        );
-
-    };
-
-
-    relationRequest.onerror = () => {
-
-        console.error(
-            "خطأ في حفظ العلاقة:",
-            relationRequest.error
-        );
-
-    };
-
-}
-
-
-transaction.oncomplete = () => {
-
-    alert(
-        "تم حفظ القضية بنجاح."
-    );
-
-
-    caseForm.reset();
-
-
-    caseModal.classList.add(
-        "hidden"
-    );
-
-
-    loadCases();
-
-};
-
-
-transaction.onerror = () => {
-
-    alert(
-        "حدث خطأ أثناء حفظ القضية."
-    );
-
-};
-
-            }
-        );
-
-    }
 }
 
 
