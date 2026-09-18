@@ -145,7 +145,7 @@ if (!database.objectStoreNames.contains("caseClients")) {
     );
 
 
-    relationStore.createIndex(
+       relationStore.createIndex(
         "caseClient",
         [
             "caseId",
@@ -158,7 +158,9 @@ if (!database.objectStoreNames.contains("caseClients")) {
 
 }
 
-  request.onsuccess = (event) => {
+    };
+
+    request.onsuccess = (event) => {
 
     db = event.target.result;
 
