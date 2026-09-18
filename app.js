@@ -632,8 +632,9 @@ addRequest.onsuccess = () => {
         ).value;
 
 
-    if (clientId) {
+if (clientId) {
 
+    const relationRequest =
         relationStore.add({
 
             caseId: caseId,
@@ -642,9 +643,27 @@ addRequest.onsuccess = () => {
 
         });
 
-    }
 
-};
+    relationRequest.onsuccess = () => {
+
+        console.log(
+            "تم حفظ العلاقة:",
+            relationRequest.result
+        );
+
+    };
+
+
+    relationRequest.onerror = () => {
+
+        console.error(
+            "خطأ في حفظ العلاقة:",
+            relationRequest.error
+        );
+
+    };
+
+}
 
 
 transaction.oncomplete = () => {
