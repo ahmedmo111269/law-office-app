@@ -425,20 +425,22 @@ function setupCaseEvents() {
        فتح نافذة إضافة قضية
     ========================================= */
 
-    if (addCaseButton) {
+   if (addCaseButton) {
 
-        addCaseButton.addEventListener(
-            "click",
-            () => {
+    addCaseButton.addEventListener(
+        "click",
+        () => {
 
-                caseModal.classList.remove(
-                    "hidden"
-                );
+            loadClientsIntoCaseSelect();
 
-            }
-        );
+            caseModal.classList.remove(
+                "hidden"
+            );
 
-    }
+        }
+    );
+
+}
 
 
     /* =========================================
