@@ -651,6 +651,54 @@ function setupCaseEvents() {
    تحميل القضايا
 ========================================= */
 
+function loadClientsIntoCaseSelect() {
+
+    const select =
+        document.getElementById("caseClientSelect");
+
+    if (!select || !db) {
+        return;
+    }
+
+    const transaction =
+        db.transaction(
+            CLIENTS_STORE,
+            "readonly"
+        );
+
+    const store =
+        transaction.objectStore(
+            CLIENTS_STORE
+        );
+
+    const request =
+        store.getAll();
+
+    request.onsuccess = () => {
+
+        const clients =
+            request.result.filter(
+                client => !client.archived
+            );
+
+        select.innerHTML =
+            '<option value="">-- اختر العميل --</option>';
+
+        clients.forEach(client => {
+
+            const option =
+                document.createElement("option");
+
+            option.value = client.id;
+            option.textContent = client.fullName;
+
+            select.appendChild(option);
+
+        });
+
+    };
+
+}
 function loadCases(searchText = "") {
 
     const container =
