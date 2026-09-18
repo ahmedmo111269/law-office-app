@@ -1,5 +1,5 @@
 const DB_NAME = "LawOfficeDB";
-const DB_VERSION = 4;
+const DB_VERSION = 5;
 const CLIENTS_STORE = "clients";
 const CASES_STORE = "cases";
 
@@ -111,7 +111,52 @@ function openDatabase() {
         }
 
     };
+/* =========================================
+   إنشاء مخزن العلاقة بين العملاء والقضايا
+========================================= */
 
+if (!database.objectStoreNames.contains("caseClients")) {
+
+    const relationStore =
+        database.createObjectStore(
+            "caseClients",
+            {
+                keyPath: "id",
+                autoIncrement: true
+            }
+        );
+
+
+    relationStore.createIndex(
+        "caseId",
+        "caseId",
+        {
+            unique: false
+        }
+    );
+
+
+    relationStore.createIndex(
+        "clientId",
+        "clientId",
+        {
+            unique: false
+        }
+    );
+
+
+    relationStore.createIndex(
+        "caseClient",
+        [
+            "caseId",
+            "clientId"
+        ],
+        {
+            unique: false
+        }
+    );
+
+}
 
   request.onsuccess = (event) => {
 
