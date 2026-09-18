@@ -470,8 +470,7 @@ function setupCaseEvents() {
     "submit",
     (event) => {
 
-        alert("وصل زر حفظ القضية إلى JavaScript");
-
+      
         event.preventDefault();
 
 
