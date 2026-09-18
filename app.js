@@ -623,16 +623,9 @@ function loadCases(searchText = "") {
 
 
     if (!container) {
-
         return;
-
     }
 
-
-    /*
-       لا توجد قاعدة بيانات للقضايا
-       حتى الآن.
-    */
 
     const search =
         searchText
@@ -640,39 +633,196 @@ function loadCases(searchText = "") {
             .toLowerCase();
 
 
-    if (countElement) {
+    const transaction =
+        db.transaction(
+            [CASES_STORE],
+            "readonly"
+        );
 
-        countElement.textContent = "0";
 
-    }
+    const store =
+        transaction.objectStore(
+            CASES_STORE
+        );
 
 
-    if (search) {
+    const request =
+        store.getAll();
+
+
+    request.onsuccess = () => {
+
+        let cases =
+            request.result;
+
+
+        /* =========================================
+           البحث
+        ========================================= */
+
+        if (search) {
+
+            cases =
+                cases.filter(
+                    (item) => {
+
+                        return (
+
+                            String(
+                                item.caseNumber || ""
+                            )
+                            .toLowerCase()
+                            .includes(search)
+
+                            ||
+
+                            String(
+                                item.caseYear || ""
+                            )
+                            .toLowerCase()
+                            .includes(search)
+
+                            ||
+
+                            String(
+                                item.caseCourt || ""
+                            )
+                            .toLowerCase()
+                            .includes(search)
+
+                            ||
+
+                            String(
+                                item.caseSubject || ""
+                            )
+                            .toLowerCase()
+                            .includes(search)
+
+                        );
+
+                    }
+                );
+
+        }
+
+
+        /* =========================================
+           العدد
+        ========================================= */
+
+        if (countElement) {
+
+            countElement.textContent =
+                cases.length;
+
+        }
+
+
+        /* =========================================
+           لا توجد نتائج
+        ========================================= */
+
+        if (cases.length === 0) {
+
+            container.innerHTML = `
+
+                <div class="empty">
+
+                    ${
+                        search
+                            ? "لا توجد قضايا تطابق البحث."
+                            : "لا توجد قضايا مسجلة حتى الآن."
+                    }
+
+                </div>
+
+            `;
+
+            return;
+
+        }
+
+
+        /* =========================================
+           عرض القضايا
+        ========================================= */
+
+        container.innerHTML =
+            cases
+                .map(
+                    (item) => {
+
+                        return `
+
+                            <div class="client-card">
+
+                                <div>
+
+                                    <h3>
+
+                                        قضية رقم
+                                        ${item.caseNumber}
+                                        لسنة
+                                        ${item.caseYear}
+
+                                    </h3>
+
+
+                                    <p>
+
+                                        ${
+                                            item.caseType
+                                                || "نوع القضية غير محدد"
+                                        }
+
+                                    </p>
+
+
+                                    <p>
+
+                                        ${
+                                            item.caseCourt
+                                                || "المحكمة غير محددة"
+                                        }
+
+                                    </p>
+
+                                </div>
+
+
+                                <div>
+
+                                    ${
+                                        item.caseStatus
+                                            || "الحالة غير محددة"
+                                    }
+
+                                </div>
+
+                            </div>
+
+                        `;
+
+                    }
+                )
+                .join("");
+
+    };
+
+
+    request.onerror = () => {
 
         container.innerHTML = `
 
             <div class="empty">
 
-                لا توجد قضايا تطابق البحث.
+                حدث خطأ أثناء تحميل القضايا.
 
             </div>
 
         `;
 
-        return;
-
-    }
-
-
-    container.innerHTML = `
-
-        <div class="empty">
-
-            لا توجد قضايا مسجلة حتى الآن.
-
-        </div>
-
-    `;
+    };
 
 }
 
