@@ -1,10 +1,10 @@
 document.addEventListener("DOMContentLoaded", async () => {
     try {
-        // 1. Initialize IndexedDB Connection
+        // 1. الاتصال بقاعدة البيانات IndexedDB
         await LawOfficeApp.DB.Database.connect();
         console.log("IndexedDB LawOfficeDB Ready.");
 
-        // 2. Setup Mobile Sidebar Navigation Toggle
+        // 2. إعداد زر القائمة الجانبية للشاشات الصغيرة
         const toggleBtn = document.getElementById("btn-toggle-sidebar");
         const sidebar = document.getElementById("app-sidebar");
         if (toggleBtn && sidebar) {
@@ -13,17 +13,27 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
 
-        // 3. Register SPA Routes
+        // 3. تسجيل شاشات التطبيق (Routes) وربطها بالموديولات
         const Router = LawOfficeApp.Core.Router;
+
+        // شاشة لوحة التحكم
         Router.register("#/dashboard", (c) => LawOfficeApp.Modules.Dashboard.render(c));
-        Router.register("#/clients", (c) => {
-            c.innerHTML = "<h2>👥 إدارة العملاء</h2><p>قائمة العملاء والسجلات...</p>";
-        });
-        Router.register("#/cases", (c) => {
-            c.innerHTML = "<h2>⚖️ إدارة القضايا</h2><p>سجلات القضايا والدوائر...</p>";
+
+        // شاشة العملاء (استدعاء الموديول الجديد)
+        Router.register("#/clients", () => {
+            if (LawOfficeApp.Modules.Clients && typeof LawOfficeApp.Modules.Clients.init === "function") {
+                LawOfficeApp.Modules.Clients.init();
+            }
         });
 
-        // 4. Start Router Navigation
+        // شاشة القضايا (استدعاء الموديول الجديد)
+        Router.register("#/cases", () => {
+            if (LawOfficeApp.Modules.Cases && typeof LawOfficeApp.Modules.Cases.init === "function") {
+                LawOfficeApp.Modules.Cases.init();
+            }
+        });
+
+        // 4. تشغيل نظام التنقل
         Router.init();
 
     } catch (err) {
