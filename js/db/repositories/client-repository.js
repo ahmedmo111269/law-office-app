@@ -1,24 +1,67 @@
 window.LawOfficeApp = window.LawOfficeApp || {};
 window.LawOfficeApp.DB = window.LawOfficeApp.DB || {};
-window.LawOfficeApp.Repositories = window.LawOfficeApp.Repositories || {};
+window.LawOfficeApp.DB.Repositories = window.LawOfficeApp.DB.Repositories || {};
 
 const ClientRepository = {
     async getAll() {
-        if (!LawOfficeApp.DB.db) return [];
-        return await LawOfficeApp.DB.db.getAll('clients');
+        const STORES = LawOfficeApp.Constants.STORES;
+        return LawOfficeApp.DB.Database.executeTransaction(
+            [STORES.CLIENTS],
+            "readonly",
+            (stores) => {
+                return new Promise((resolve, reject) => {
+                    const req = stores[STORES.CLIENTS].getAll();
+                    req.onsuccess = () => resolve(req.result || []);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+        );
     },
 
     async add(clientData) {
-        if (!LawOfficeApp.DB.db) return null;
-        return await LawOfficeApp.DB.db.add('clients', clientData);
+        const STORES = LawOfficeApp.Constants.STORES;
+        return LawOfficeApp.DB.Database.executeTransaction(
+            [STORES.CLIENTS],
+            "readwrite",
+            (stores) => {
+                return new Promise((resolve, reject) => {
+                    const req = stores[STORES.CLIENTS].add(clientData);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+        );
     },
 
     async getById(id) {
-        if (!LawOfficeApp.DB.db) return null;
-        return await LawOfficeApp.DB.db.get('clients', id);
+        const STORES = LawOfficeApp.Constants.STORES;
+        return LawOfficeApp.DB.Database.executeTransaction(
+            [STORES.CLIENTS],
+            "readonly",
+            (stores) => {
+                return new Promise((resolve, reject) => {
+                    const req = stores[STORES.CLIENTS].get(id);
+                    req.onsuccess = () => resolve(req.result);
+                    req.onerror = () => reject(req.error);
+                });
+            }
+        );
+    },
+
+    async countActive() {
+        try {
+            const allClients = await this.getAll();
+            const activeClients = allClients.filter(c => !c.archived);
+            return activeClients.length;
+        } catch (err) {
+            console.error("خطأ في حساب عدد العملاء:", err);
+            return 0;
+        }
     }
 };
 
-// تسجيل المستودع في المسارات الممكنة لضمان استدعائه بدون أخطاء
+// تسجيل المستودع في المسارات لضمان التوافقية
+window.LawOfficeApp.DB.Repositories.ClientRepository = ClientRepository;
 window.LawOfficeApp.DB.ClientRepository = ClientRepository;
+window.LawOfficeApp.Repositories = window.LawOfficeApp.Repositories || {};
 window.LawOfficeApp.Repositories.Client = ClientRepository;
