@@ -3,16 +3,11 @@ window.LawOfficeApp.Modules = window.LawOfficeApp.Modules || {};
 
 window.LawOfficeApp.Modules.Clients = {
     async init() {
-        const container = document.getElementById('router-view') || document.getElementById('view-container');
+        const container = document.getElementById('router-view') || document.getElementById('main-content');
         if (!container) return;
 
-        // 1. رسم واجهة العملاء
         this.render(container);
-
-        // 2. تحميل البيانات مع التحقق من وجود المستودع
         await this.loadClients();
-
-        // 3. ربط أحداث الأزرار
         this.bindEvents();
     },
 
@@ -24,7 +19,7 @@ window.LawOfficeApp.Modules.Clients = {
             </div>
             <div id="clients-list-container">
                 <div class="card" style="padding: 20px; background: #fff; border-radius: 8px;">
-                    <p>جاري تحميل العملاء...</p>
+                    <p style="color: #666;">جاري تحميل البيانات...</p>
                 </div>
             </div>
         `;
@@ -39,65 +34,85 @@ window.LawOfficeApp.Modules.Clients = {
 
     async loadClients() {
         const listContainer = document.getElementById('clients-list-container');
+        if (!listContainer) return;
+
         try {
-            // الوصول الآمن لمستودع العملاء باختبار كافة المسميات المحتملة
-            const clientRepo = (LawOfficeApp.DB && LawOfficeApp.DB.ClientRepository) || 
-                               (LawOfficeApp.Repositories && LawOfficeApp.Repositories.Client) ||
-                               LawOfficeApp.ClientRepository;
+            const clientRepo = LawOfficeApp.DB.Repositories.ClientRepository || 
+                               LawOfficeApp.DB.ClientRepository || 
+                               LawOfficeApp.Repositories.Client;
 
             if (!clientRepo || typeof clientRepo.getAll !== 'function') {
-                listContainer.innerHTML = `
-                    <div class="card" style="padding: 20px; background: #fff; border-radius: 8px; border-right: 4px solid #3b82f6;">
-                        <p>قائمة العملاء المسجلين في النظام:</p>
-                        <p style="color: #666;">لا يوجد عملاء مسجلون حالياً.</p>
-                    </div>`;
+                this.renderEmptyList(listContainer);
                 return;
             }
 
             const clients = await clientRepo.getAll();
             if (!clients || clients.length === 0) {
-                listContainer.innerHTML = `
-                    <div class="card" style="padding: 20px; background: #fff; border-radius: 8px; border-right: 4px solid #3b82f6;">
-                        <p>قائمة العملاء المسجلين في النظام:</p>
-                        <p style="color: #666;">لا يوجد عملاء مسجلون حالياً.</p>
-                    </div>`;
+                this.renderEmptyList(listContainer);
                 return;
             }
 
-            let html = '<ul style="list-style: none; padding: 0;">';
+            let html = `
+                <div class="card" style="padding: 20px; background: #fff; border-radius: 8px; border-right: 4px solid #2563eb; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-top:0; margin-bottom:15px;">قائمة العملاء المسجلين:</h3>
+                    <table style="width: 100%; border-collapse: collapse; text-align: right;">
+                        <thead>
+                            <tr style="background-color: #f8fafc; border-bottom: 2px solid #e2e8f0;">
+                                <th style="padding: 10px;">اسم العميل</th>
+                                <th style="padding: 10px;">رقم الهاتف</th>
+                                <th style="padding: 10px;">الرقم القومي</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+            `;
+
             clients.forEach(c => {
-                html += `<li style="padding: 12px; border-bottom: 1px solid #eee;"><strong>${c.name}</strong> - ${c.phone || 'بدون رقم'}</li>`;
+                const name = c.fullName || c.name || '-';
+                const phone = c.phone1 || c.phone || '-';
+                const nationalId = c.nationalId || '-';
+                html += `
+                    <tr style="border-bottom: 1px solid #e2e8f0;">
+                        <td style="padding: 10px; font-weight: bold;">${name}</td>
+                        <td style="padding: 10px;">${phone}</td>
+                        <td style="padding: 10px;">${nationalId}</td>
+                    </tr>
+                `;
             });
-            html += '</ul>';
+
+            html += `</tbody></table></div>`;
             listContainer.innerHTML = html;
         } catch (err) {
-            console.error('خطأ أثناء تحميل العملاء:', err);
-            listContainer.innerHTML = `
-                <div class="card" style="padding: 20px; background: #fff; border-radius: 8px;">
-                    <p style="color: #666;">لا يوجد عملاء مسجلون حالياً.</p>
-                </div>`;
+            console.error('خطأ أثناء قراءة العملاء:', err);
+            this.renderEmptyList(listContainer);
         }
     },
 
+    renderEmptyList(container) {
+        container.innerHTML = `
+            <div class="card" style="padding: 20px; background: #fff; border-radius: 8px; border-right: 4px solid #2563eb;">
+                <p style="font-weight:bold; margin-bottom: 5px;">قائمة العملاء المسجلين في النظام:</p>
+                <p style="color: #666; margin: 0;">لا يوجد عملاء مسجلون حالياً.</p>
+            </div>`;
+    },
+
     showClientModal() {
-        // إنشاء حاوية Wrapper كعنصر DOM صريح متوافق مع appendChild
         const wrapperNode = document.createElement('div');
         wrapperNode.className = 'modal-form-wrapper';
         
         const form = document.createElement('form');
         form.id = 'client-form';
-        form.style.cssText = 'display: flex; flex-direction: column; gap: 12px; text-align: right;';
+        form.style.cssText = 'display: flex; flex-direction: column; gap: 12px; text-align: right; padding: 10px 0;';
         form.innerHTML = `
             <div>
-                <label style="display:block; margin-bottom:5px;">اسم العميل *</label>
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">اسم العميل *</label>
                 <input type="text" id="client-name" required style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
             </div>
             <div>
-                <label style="display:block; margin-bottom:5px;">رقم الهاتف</label>
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">رقم الهاتف</label>
                 <input type="tel" id="client-phone" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
             </div>
             <div>
-                <label style="display:block; margin-bottom:5px;">الرقم القومي</label>
+                <label style="display:block; margin-bottom:5px; font-weight:bold;">الرقم القومي</label>
                 <input type="text" id="client-national-id" style="width: 100%; padding: 8px; box-sizing: border-box; border: 1px solid #ccc; border-radius: 4px;">
             </div>
         `;
@@ -108,7 +123,11 @@ window.LawOfficeApp.Modules.Clients = {
             {
                 label: 'إلغاء',
                 class: 'btn-secondary',
-                onClick: () => {}
+                onClick: () => {
+                    if (LawOfficeApp.UI && LawOfficeApp.UI.Modal) {
+                        LawOfficeApp.UI.Modal.hide();
+                    }
+                }
             },
             {
                 label: 'حفظ العميل',
@@ -121,25 +140,29 @@ window.LawOfficeApp.Modules.Clients = {
                     }
 
                     const clientData = {
-                        name: nameInput.value.trim(),
-                        phone: document.getElementById('client-phone')?.value || '',
+                        fullName: nameInput.value.trim(),
+                        phone1: document.getElementById('client-phone')?.value || '',
                         nationalId: document.getElementById('client-national-id')?.value || '',
+                        archived: false,
                         createdAt: new Date().toISOString()
                     };
 
-                    const clientRepo = (LawOfficeApp.DB && LawOfficeApp.DB.ClientRepository) || 
-                                       (LawOfficeApp.Repositories && LawOfficeApp.Repositories.Client) ||
-                                       LawOfficeApp.ClientRepository;
+                    const clientRepo = LawOfficeApp.DB.Repositories.ClientRepository || 
+                                       LawOfficeApp.DB.ClientRepository || 
+                                       LawOfficeApp.Repositories.Client;
 
                     if (clientRepo && typeof clientRepo.add === 'function') {
                         await clientRepo.add(clientData);
+                    }
+
+                    if (LawOfficeApp.UI && LawOfficeApp.UI.Modal) {
+                        LawOfficeApp.UI.Modal.hide();
                     }
                     await this.loadClients();
                 }
             }
         ];
 
-        // تمرير عنصر DOM حقيقي (wrapperNode)
         if (LawOfficeApp.UI && LawOfficeApp.UI.Modal) {
             LawOfficeApp.UI.Modal.show('إضافة عميل جديد', wrapperNode, actions);
         }
