@@ -26,54 +26,83 @@ LawOfficeApp.Modules.Dashboard = {
             </div>
         `;
 
-        // Calculate actual stats from IndexedDB
-        const clientsCount = await LawOfficeApp.DB.Repositories.ClientRepository.countActive();
-        const casesCount = await LawOfficeApp.DB.Repositories.CaseRepository.countActive();
+        await this.refreshStats();
 
-        document.getElementById("stat-active-clients").textContent = clientsCount;
-        document.getElementById("stat-active-cases").textContent = casesCount;
+        const quickBtn = document.getElementById("btn-quick-add-client");
+        if (quickBtn) {
+            quickBtn.addEventListener("click", () => {
+                this.showAddClientModal();
+            });
+        }
+    },
 
-        // Event listener for quick action
-        document.getElementById("btn-quick-add-client").addEventListener("click", () => {
-            this.showAddClientModal();
-        });
+    async refreshStats() {
+        try {
+            const clientRepo = LawOfficeApp.DB.Repositories.ClientRepository;
+            const caseRepo = LawOfficeApp.DB.Repositories.CaseRepository;
+
+            const clientsCount = clientRepo && typeof clientRepo.countActive === 'function' ? await clientRepo.countActive() : 0;
+            const casesCount = caseRepo && typeof caseRepo.countActive === 'function' ? await caseRepo.countActive() : 0;
+
+            const clientElem = document.getElementById("stat-active-clients");
+            const caseElem = document.getElementById("stat-active-cases");
+
+            if (clientElem) clientElem.textContent = clientsCount;
+            if (caseElem) caseElem.textContent = casesCount;
+        } catch (err) {
+            console.error("خطأ أثناء تحديث الإحصائيات:", err);
+        }
     },
 
     showAddClientModal() {
         const form = document.createElement("form");
         form.innerHTML = `
-            <div style="display:flex;flex-direction:column;gap:0.75rem;">
+            <div style="display:flex;flex-direction:column;gap:0.75rem;text-align:right;">
                 <label>اسم العميل *
-                    <input type="text" id="m-client-name" style="width:100%;padding:0.5rem;margin-top:0.25rem;" required>
+                    <input type="text" id="m-client-name" style="width:100%;padding:0.5rem;margin-top:0.25rem;box-sizing:border-box;" required>
                 </label>
                 <label>رقم الهاتف
-                    <input type="text" id="m-client-phone" style="width:100%;padding:0.5rem;margin-top:0.25rem;">
+                    <input type="text" id="m-client-phone" style="width:100%;padding:0.5rem;margin-top:0.25rem;box-sizing:border-box;">
                 </label>
                 <label>الرقم القومي
-                    <input type="text" id="m-client-nid" style="width:100%;padding:0.5rem;margin-top:0.25rem;">
+                    <input type="text" id="m-client-nid" style="width:100%;padding:0.5rem;margin-top:0.25rem;box-sizing:border-box;">
                 </label>
             </div>
         `;
 
         LawOfficeApp.UI.Modal.show("حفظ بيانات عميل جديد", form, [
-            { label: "إلغاء", class: "btn-secondary" },
+            { 
+                label: "إلغاء", 
+                class: "btn-secondary",
+                onClick: () => {
+                    LawOfficeApp.UI.Modal.hide();
+                }
+            },
             {
                 label: "حفظ العميل",
                 class: "btn-primary",
                 onClick: async () => {
-                    const name = document.getElementById("m-client-name").value;
-                    const phone = document.getElementById("m-client-phone").value;
-                    const nid = document.getElementById("m-client-nid").value;
+                    const name = document.getElementById("m-client-name")?.value?.trim();
+                    const phone = document.getElementById("m-client-phone")?.value || "";
+                    const nid = document.getElementById("m-client-nid")?.value || "";
+
+                    if (!name) {
+                        alert("يرجى كتابة اسم العميل أولاً");
+                        return;
+                    }
 
                     try {
                         await LawOfficeApp.Services.ClientService.createClient({
                             fullName: name,
                             phone1: phone,
-                            nationalId: nid
+                            nationalId: nid,
+                            archived: false,
+                            createdAt: new Date().toISOString()
                         });
+
                         LawOfficeApp.UI.Toast.show("تم إضافة العميل بنجاح!", "success");
-                        // Refresh route view
-                        LawOfficeApp.Core.Router.handleRoute();
+                        LawOfficeApp.UI.Modal.hide();
+                        await this.refreshStats();
                     } catch (err) {
                         LawOfficeApp.Core.ErrorHandler.handle(err.message, err);
                     }
