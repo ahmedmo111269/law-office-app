@@ -1,40 +1,24 @@
-LawOfficeApp.DB.Repositories.ClientRepository = {
+window.LawOfficeApp = window.LawOfficeApp || {};
+window.LawOfficeApp.DB = window.LawOfficeApp.DB || {};
+window.LawOfficeApp.Repositories = window.LawOfficeApp.Repositories || {};
+
+const ClientRepository = {
+    async getAll() {
+        if (!LawOfficeApp.DB.db) return [];
+        return await LawOfficeApp.DB.db.getAll('clients');
+    },
+
     async add(clientData) {
-        const now = new Date().toISOString();
-        const payload = {
-            ...clientData,
-            archived: false,
-            createdAt: now,
-            updatedAt: now
-        };
-
-        return LawOfficeApp.DB.Database.executeTransaction(
-            [LawOfficeApp.Constants.STORES.CLIENTS],
-            "readwrite",
-            (stores) => stores[LawOfficeApp.Constants.STORES.CLIENTS].add(payload)
-        );
+        if (!LawOfficeApp.DB.db) return null;
+        return await LawOfficeApp.DB.db.add('clients', clientData);
     },
 
-    async getAll(includeArchived = false) {
-        const db = await LawOfficeApp.DB.Database.connect();
-        return new Promise((resolve, reject) => {
-            const tx = db.transaction(LawOfficeApp.Constants.STORES.CLIENTS, "readonly");
-            const store = tx.objectStore(LawOfficeApp.Constants.STORES.CLIENTS);
-            const req = store.getAll();
-
-            req.onsuccess = () => {
-                let results = req.result || [];
-                if (!includeArchived) {
-                    results = results.filter(c => !c.archived);
-                }
-                resolve(results);
-            };
-            req.onerror = () => reject(req.error);
-        });
-    },
-
-    async countActive() {
-        const clients = await this.getAll(false);
-        return clients.length;
+    async getById(id) {
+        if (!LawOfficeApp.DB.db) return null;
+        return await LawOfficeApp.DB.db.get('clients', id);
     }
 };
+
+// تسجيل المستودع في المسارات الممكنة لضمان استدعائه بدون أخطاء
+window.LawOfficeApp.DB.ClientRepository = ClientRepository;
+window.LawOfficeApp.Repositories.Client = ClientRepository;
