@@ -21,8 +21,9 @@ LawOfficeApp.DB.Database = {
             };
 
             request.onerror = (e) => {
-                LawOfficeApp.Core.ErrorHandler.handle("فشل الاتصال بقاعدة البيانات", e);
-                reject(e);
+                const errorMsg = request.error ? request.error.message : "تعذر فتح قاعدة البيانات";
+                LawOfficeApp.Core.ErrorHandler.handle("فشل الاتصال بقاعدة البيانات: " + errorMsg, request.error);
+                reject(request.error);
             };
         });
     },
