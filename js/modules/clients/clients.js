@@ -9,10 +9,10 @@ window.LawOfficeApp.Modules.Clients = {
         // 1. رسم واجهة العملاء
         this.render(container);
 
-        // 2. تحميل وقراءة البيانات
+        // 2. تحميل البيانات
         await this.loadClients();
 
-        // 3. ربط أحداث الأزرار (Event Listeners)
+        // 3. ربط الأحداث
         this.bindEvents();
     },
 
@@ -63,41 +63,50 @@ window.LawOfficeApp.Modules.Clients = {
     },
 
     showClientModal() {
-        if (LawOfficeApp.UI && LawOfficeApp.UI.Modal) {
-            LawOfficeApp.UI.Modal.show({
-                title: 'إضافة عميل جديد',
-                content: `
-                    <form id="client-form" style="display: flex; flex-direction: column; gap: 10px;">
-                        <label>اسم العميل *</label>
-                        <input type="text" id="client-name" required style="padding: 8px; width: 100%;">
-                        
-                        <label>رقم الهاتف</label>
-                        <input type="tel" id="client-phone" style="padding: 8px; width: 100%;">
-                        
-                        <label>الرقم القومي</label>
-                        <input type="text" id="client-national-id" style="padding: 8px; width: 100%;">
-                        
-                        <button type="submit" class="btn btn-primary" style="margin-top: 15px; padding: 10px;">حفظ العميل</button>
-                    </form>
-                `,
-                onReady: () => {
-                    const form = document.getElementById('client-form');
-                    form.addEventListener('submit', async (e) => {
-                        e.preventDefault();
-                        const clientData = {
-                            name: document.getElementById('client-name').value,
-                            phone: document.getElementById('client-phone').value,
-                            nationalId: document.getElementById('client-national-id').value,
-                            createdAt: new Date().toISOString()
-                        };
-                        await LawOfficeApp.DB.ClientRepository.add(clientData);
-                        LawOfficeApp.UI.Modal.hide();
-                        this.loadClients();
-                    });
+        // إنشاء عنصر النموذج كـ DOM Node بدلاً من نص HTML
+        const form = document.createElement('form');
+        form.id = 'client-form';
+        form.style.cssText = 'display: flex; flex-direction: column; gap: 10px;';
+        form.innerHTML = `
+            <label>اسم العميل *</label>
+            <input type="text" id="client-name" required style="padding: 8px; width: 100%;">
+            
+            <label>رقم الهاتف</label>
+            <input type="tel" id="client-phone" style="padding: 8px; width: 100%;">
+            
+            <label>الرقم القومي</label>
+            <input type="text" id="client-national-id" style="padding: 8px; width: 100%;">
+        `;
+
+        // إعداد مصفوفة الأزرار (actions) المطلوبة
+        const actions = [
+            {
+                label: 'إلغاء',
+                class: 'btn-secondary',
+                onClick: () => {}
+            },
+            {
+                label: 'حفظ العميل',
+                class: 'btn-primary',
+                onClick: async () => {
+                    const nameInput = document.getElementById('client-name');
+                    if (!nameInput || !nameInput.value.trim()) {
+                        alert('يرجى كتابة اسم العميل أولاً');
+                        return;
+                    }
+                    const clientData = {
+                        name: nameInput.value.trim(),
+                        phone: document.getElementById('client-phone')?.value || '',
+                        nationalId: document.getElementById('client-national-id')?.value || '',
+                        createdAt: new Date().toISOString()
+                    };
+                    await LawOfficeApp.DB.ClientRepository.add(clientData);
+                    await this.loadClients();
                 }
-            });
-        } else {
-            alert('تعذر فتح النافذة: ملف UI.Modal غير معرّف أو مفقود.');
-        }
+            }
+        ];
+
+        // استدعاء المودال بالتوقيع المطابق لكودك: show(title, contentNode, actions)
+        LawOfficeApp.UI.Modal.show('إضافة عميل جديد', form, actions);
     }
 };
