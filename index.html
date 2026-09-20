@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>⚖️ نظام إدارة مكتب المحاماة</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#1e293b">
+</head>
+<body>
+    <div id="app-container" class="app-container">
+        <!-- الشريط العلوي -->
+        <header class="app-header">
+            <div class="header-brand">
+                <button id="btn-toggle-sidebar" class="btn-icon" aria-label="القائمة">☰</button>
+                <h1 class="brand-title">⚖️ مكتب المحاماة</h1>
+            </div>
+            <div class="header-search">
+                <input type="search" id="global-search-input" placeholder="🔍 ابحث في المكتب (عميل، قضية، خصم...)" autocomplete="off">
+            </div>
+        </header>
+
+        <!-- القائمة الجانبية -->
+        <aside id="app-sidebar" class="app-sidebar">
+            <nav class="sidebar-nav">
+                <a href="#/dashboard" class="nav-item active"><span class="nav-icon">📊</span><span class="nav-label">الرئيسية</span></a>
+                <a href="#/clients" class="nav-item"><span class="nav-icon">👥</span><span class="nav-label">العملاء</span></a>
+                <a href="#/cases" class="nav-item"><span class="nav-icon">⚖️</span><span class="nav-label">القضايا</span></a>
+                <a href="#/hearings" class="nav-item"><span class="nav-icon">📅</span><span class="nav-label">الجلسات</span></a>
+                <a href="#/procedures" class="nav-item"><span class="nav-icon">📋</span><span class="nav-label">الإجراءات</span></a>
+                <a href="#/judgments" class="nav-item"><span class="nav-icon">📜</span><span class="nav-label">الأحكام</span></a>
+                <a href="#/reports" class="nav-item"><span class="nav-icon">📈</span><span class="nav-label">التقارير</span></a>
+                <a href="#/backup" class="nav-item"><span class="nav-icon">💾</span><span class="nav-label">النسخ الاحتياطي</span></a>
+                <a href="#/settings" class="nav-item"><span class="nav-icon">⚙️</span><span class="nav-label">الإعدادات</span></a>
+            </nav>
+        </aside>
+
+        <!-- المنطقة الرئيسية لتغيير الشاشات SPA -->
+        <main id="main-content" class="main-content">
+            <div id="loading-spinner" class="loading-spinner hidden">
+                <div class="spinner"></div>
+                <span>جاري تحميل البيانات...</span>
+            </div>
+            <div id="router-view" class="router-view"></div>
+        </main>
+    </div>
+
+    <!-- Modals & Toasts Containers -->
+    <div id="modal-container" class="modal-container hidden"></div>
+    <div id="toast-container" class="toast-container"></div>
+
+    <!-- Core Scripts -->
+    <script src="js/namespace.js"></script>
+    <script src="js/constants.js"></script>
+
+    <!-- DB Layer -->
+    <script src="js/db/schema.js"></script>
+    <script src="js/db/db.js"></script>
+    <script src="js/db/repositories/client-repository.js"></script>
+    <script src="js/db/repositories/case-repository.js"></script>
+    <script src="js/db/repositories/case-client-repository.js"></script>
+
+    <!-- Core Services -->
+    <script src="js/core/error-handler.js"></script>
+    <script src="js/core/validators.js"></script>
+    <script src="js/core/router.js"></script>
+
+    <!-- App Services -->
+    <script src="js/services/client-service.js"></script>
+
+    <!-- UI Core -->
+    <script src="js/ui/toast.js"></script>
+    <script src="js/ui/modal.js"></script>
+
+    <!-- App Modules -->
+    <script src="js/modules/dashboard/dashboard.js"></script>
+
+    <!-- Entry Point -->
+    <script src="js/app.js"></script>
+</body>
+</html>
