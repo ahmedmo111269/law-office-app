@@ -1,30 +1,46 @@
-LawOfficeApp.Core.Router = {
-    routes: {},
-
-    register(path, handler) {
-        this.routes[path] = handler;
+LawOfficeApp.Router = {
+    routes: {
+        '#/dashboard': LawOfficeApp.Modules.Dashboard,
+        '#/clients': LawOfficeApp.Modules.Clients,
+        '#/cases': LawOfficeApp.Modules.Cases
     },
 
     init() {
-        window.addEventListener("hashchange", () => this.handleRoute());
-        this.handleRoute();
+        // الاستماع للتغيرات في الـ URL
+        window.addEventListener('hashchange', () => this.handleRoute());
+        
+        // تشغيل الراوتر عند تحميل الصفحة أول مرة
+        window.addEventListener('DOMContentLoaded', () => this.handleRoute());
+
+        // تشغيل مباشر في حال كان المستند محمل بالفعل
+        if (document.readyState === 'complete' || document.readyState === 'interactive') {
+            this.handleRoute();
+        }
     },
 
-    handleRoute() {
-        const hash = window.location.hash || "#/dashboard";
-        const viewContainer = document.getElementById("router-view");
-        
-        // Highlight menu
-        document.querySelectorAll(".nav-item").forEach(item => {
-            item.classList.toggle("active", item.getAttribute("href") === hash);
-        });
+    async handleRoute() {
+        const hash = window.location.hash || '#/dashboard';
+        const module = this.routes[hash] || this.routes['#/dashboard'];
 
-        const handler = this.routes[hash] || this.routes["#/dashboard"];
-        if (handler) {
-            viewContainer.innerHTML = "";
-            handler(viewContainer);
+        if (module && typeof module.init === 'function') {
+            await module.init();
+            this.updateActiveNavLink(hash);
         } else {
-            viewContainer.innerHTML = "<h2>404 - الشاشة غير موجودة</h2>";
+            console.error('الموديول غير موجود أو دالة init غير معرفة للرابط:', hash);
         }
+    },
+
+    updateActiveNavLink(hash) {
+        const links = document.querySelectorAll('.sidebar-nav .nav-item');
+        links.forEach(link => {
+            if (link.getAttribute('href') === hash) {
+                link.classList.add('active');
+            } else {
+                link.classList.remove('active');
+            }
+        });
     }
 };
+
+// تهيئة الراوتر تلقائياً
+LawOfficeApp.Router.init();
